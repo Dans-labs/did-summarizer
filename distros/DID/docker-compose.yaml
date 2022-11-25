@@ -9,6 +9,9 @@ services:
       build: .
       environment:
         - "DID_DB=external"
+        - "REDIS_HOST=redis"
+        - "REDIS_PORT=6379"
+        - "REDIS_DB=0"
       ports:
         - "8000:80"
 
