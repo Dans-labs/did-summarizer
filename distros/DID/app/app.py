@@ -9,6 +9,7 @@ import os
 import json
 import urllib3, io
 import pandas as pd
+import redis
 from fastapi import FastAPI, Request, Response
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -78,9 +79,16 @@ if 'config' in os.environ:
     configfile = os.environ['config']
 http = urllib3.PoolManager()
 
+@app.get("/cache")
+async def cache(uri: str, token: Optional[str] = None):
+    params = []
+
 @app.get('/version')
 def version():
     return '0.1'
 
 if __name__ == "__main__":
+    REDIS_HOST = "spiderredis"
+    
+    r = redis.Redis(host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], db=os.environ['REDIS_DB'])
     uvicorn.run(app, host="0.0.0.0", port=9266)
