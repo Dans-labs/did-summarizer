@@ -1,3 +1,4 @@
 # did-summarizer
 Linked Data summarizer driven by Decentralized Identifiers (DIDs)
-CLARIAH infrastructure
+
+Funded by CLARIAH project
