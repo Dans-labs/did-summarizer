@@ -1,0 +1,77 @@
+version: '3.7'
+# Settings and configurations that are common for all containers
+
+services:
+    didbox:
+      networks:
+        - traefik
+      image: oydeu/oydid-base #:220829e
+      environment:
+        - "DID_DB=external"
+      ports:
+        - "3000:3000"
+
+    didboxloc:
+      networks:
+        - traefik
+      image: oydeu/oydid-base #:220829e
+      container_name: didlocations
+      environment:
+        - "DID_DB=external"
+      ports:
+        - "3001:3000"
+
+    didboxorg:
+      networks:
+        - traefik
+      container_name: didorganizations
+      image: oydeu/oydid-base #:220829e
+      environment:
+        - "DID_DB=external"
+      ports:
+        - "3002:3000"
+
+    didboxper:
+      networks:
+        - traefik
+      image: oydeu/oydid-base #:220829e
+      container_name: didpersons
+      environment:
+        - "DID_DB=external"
+      ports:
+        - "3003:3000"
+
+    dbbox:
+      networks:
+        - traefik
+      image: postgres:12.1
+      container_name: db
+      environment:
+        POSTGRES_HOST_AUTH_METHOD: "trust"
+      volumes:
+        - ./data/did_data:/var/lib/postgresql/data
+      ports:
+        - "5432:5432"
+
+    redis:
+      networks:
+        - traefik
+      image: "redis:alpine"
+      container_name: redis
+      ports:
+        - "6385:6379" 
+
+    mongo:
+      networks:
+        - traefik
+      command: mongod --setParameter failIndexKeyTooLong=false
+      image: mongo:4.0
+      ports:
+         - "27200:27017" # map port to none standard port, to avoid conflicts with locally installed mongo
+      volumes:
+        - ./data/mongo:/data/db
+
+networks:
+  traefik:
+    external: true
+
