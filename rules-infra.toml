@@ -1,0 +1,52 @@
+  [http.routers]
+   # Define a connection between requests and services
+     [http.routers.did]
+        rule = "Host(`did.{{ env "hostname" }}`)"
+        entrypoints = ["websecure"]
+        service = "did"
+     [http.routers.did.tls]
+        certResolver = "myresolver"
+     [http.routers.timeline]
+        rule = "Host(`timeline.{{ env "hostname" }}`)"
+        entrypoints = ["websecure"]
+        service = "timeline"
+     [http.routers.timeline.tls]
+        certResolver = "myresolver"
+     [http.routers.analytics]
+        rule = "Host(`analytics.{{ env "hostname" }}`)"
+        entrypoints = ["websecure"]
+        service = "analytics"
+     [http.routers.analytics.tls]
+        certResolver = "myresolver"
+     [http.routers.sparql]
+        rule = "Host(`sparql.{{ env "hostname" }}`)"
+        entrypoints = ["websecure"]
+        service = "sparql"
+     [http.routers.sparql.tls]
+        certResolver = "myresolver"
+     [http.routers.api]
+        rule = "Host(`api.{{ env "hostname" }}`)"
+        entrypoints = ["websecure"]
+        service = "api"
+     [http.routers.api.tls]
+        certResolver = "myresolver"
+
+ [http.services]
+        # Define how to reach an existing service on our infrastructure
+        [http.services.did.loadBalancer]
+           [[http.services.did.loadBalancer.servers]]
+             url = "{{ env "proxyname" }}:3000"
+        [http.services.timeline.loadBalancer]
+           [[http.services.timeline.loadBalancer.servers]]
+             url = "{{ env "proxyname" }}:8095"
+        [http.services.analytics.loadBalancer]
+           [[http.services.analytics.loadBalancer.servers]]
+             url = "{{ env "proxyname" }}:8087"
+        [http.services.sparql.loadBalancer]
+           [[http.services.sparql.loadBalancer.servers]]
+             url = "{{ env "proxyname" }}:3030"
+        [http.services.api.loadBalancer]
+           [[http.services.api.loadBalancer.servers]]
+             url = "{{ env "proxyname" }}:8095"
+
+
