@@ -5,6 +5,7 @@ services:
     didbox:
       networks:
         - traefik
+      container_name: diduri
       image: oydeu/oydid-base #:220829e
       environment:
         - "DID_DB=external"
