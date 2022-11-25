@@ -74,6 +74,6 @@
              url = "{{ env "proxyname" }}:3030"
         [http.services.api.loadBalancer]
            [[http.services.api.loadBalancer.servers]]
-             url = "{{ env "proxyname" }}:8095"
+             url = "{{ env "proxyname" }}:8000"
 
 
