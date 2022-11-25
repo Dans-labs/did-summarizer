@@ -20,3 +20,6 @@ By default DID containers available for different ontologies:
 * organizations -> https://organizations.did.zandbak.dans.knaw.nl
 * uri -> https://uri.did.zandbak.dans.knaw.nl
 
+API endpoint with cache and resolver:
+* api -> https://api.did.zandbak.dans.knaw.nl
+
