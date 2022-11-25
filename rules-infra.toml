@@ -6,6 +6,24 @@
         service = "did"
      [http.routers.did.tls]
         certResolver = "myresolver"
+     [http.routers.persondid]
+        rule = "Host(`persons.did.{{ env "hostname" }}`)"
+        entrypoints = ["websecure"]
+        service = "persondid"
+     [http.routers.persondid.tls]
+        certResolver = "myresolver"
+     [http.routers.locdid]
+        rule = "Host(`loc.did.{{ env "hostname" }}`)"
+        entrypoints = ["websecure"]
+        service = "locdid"
+     [http.routers.orgdid.tls]
+        certResolver = "myresolver"
+     [http.routers.orgdid]
+        rule = "Host(`org.did.{{ env "hostname" }}`)"
+        entrypoints = ["websecure"]
+        service = "orgdid"
+     [http.routers.orgdid.tls]
+        certResolver = "myresolver"
      [http.routers.timeline]
         rule = "Host(`timeline.{{ env "hostname" }}`)"
         entrypoints = ["websecure"]
@@ -36,6 +54,15 @@
         [http.services.did.loadBalancer]
            [[http.services.did.loadBalancer.servers]]
              url = "{{ env "proxyname" }}:3000"
+        [http.services.didloc.loadBalancer]
+           [[http.services.didloc.loadBalancer.servers]]
+             url = "{{ env "proxyname" }}:3001"
+        [http.services.didorg.loadBalancer]
+           [[http.services.didorg.loadBalancer.servers]]
+             url = "{{ env "proxyname" }}:3002"
+        [http.services.didper.loadBalancer]
+           [[http.services.didper.loadBalancer.servers]]
+             url = "{{ env "proxyname" }}:3003"
         [http.services.timeline.loadBalancer]
            [[http.services.timeline.loadBalancer.servers]]
              url = "{{ env "proxyname" }}:8095"
