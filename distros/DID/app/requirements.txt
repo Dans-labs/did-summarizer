@@ -1,0 +1,17 @@
+git+https://github.com/AUSSDA/pyDataverse.git@develop
+datefinder
+asyncio
+pymongo
+elasticsearch
+pandas
+aiofiles
+jinja2==3.0.3
+pandas
+future==0.17.1
+bs4
+lxml
+langdetect
+readabilipy
+doccano-client
+psycopg2
+redis
