@@ -2,6 +2,16 @@ version: '3.7'
 # Settings and configurations that are common for all containers
 
 services:
+    api:
+      networks:
+        - traefik
+      container_name: api
+      build: .
+      environment:
+        - "DID_DB=external"
+      ports:
+        - "8000:9266"
+
     didbox:
       networks:
         - traefik
