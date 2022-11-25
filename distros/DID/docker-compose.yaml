@@ -10,7 +10,7 @@ services:
       environment:
         - "DID_DB=external"
       ports:
-        - "8000:9266"
+        - "8000:80"
 
     didbox:
       networks:
