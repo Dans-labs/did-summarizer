@@ -56,13 +56,13 @@
              url = "http://diduri:3000"
         [http.services.locdid.loadBalancer]
            [[http.services.locdid.loadBalancer.servers]]
-             url = "http://locdidations:3000"
+             url = "http://locations:3000"
         [http.services.orgdid.loadBalancer]
            [[http.services.orgdid.loadBalancer.servers]]
-             url = "http://orgdidanizations:3000"
+             url = "http://organizations:3000"
         [http.services.perdid.loadBalancer]
            [[http.services.perdid.loadBalancer.servers]]
-             url = "http://perdidsons:3000"
+             url = "http://persons:3000"
         [http.services.timeline.loadBalancer]
            [[http.services.timeline.loadBalancer.servers]]
              url = "{{ env "proxyname" }}:8095"
