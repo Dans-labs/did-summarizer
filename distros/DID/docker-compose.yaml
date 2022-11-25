@@ -16,7 +16,7 @@ services:
       networks:
         - traefik
       image: oydeu/oydid-base #:220829e
-      container_name: didlocations
+      container_name: locations
       environment:
         - "DID_DB=external"
       ports:
@@ -25,7 +25,7 @@ services:
     didboxorg:
       networks:
         - traefik
-      container_name: didorganizations
+      container_name: organizations
       image: oydeu/oydid-base #:220829e
       environment:
         - "DID_DB=external"
@@ -36,7 +36,7 @@ services:
       networks:
         - traefik
       image: oydeu/oydid-base #:220829e
-      container_name: didpersons
+      container_name: persons
       environment:
         - "DID_DB=external"
       ports:
