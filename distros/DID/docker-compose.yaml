@@ -12,8 +12,18 @@ services:
         - "REDIS_HOST=redis"
         - "REDIS_PORT=6379"
         - "REDIS_DB=0"
+        - "REDIS_GENERIC=1"
+        - "REDIS_LOC=2"
+        - "REDIS_PER=3"
+        - "REDIS_ORG=4"
+        - "GENERICURI_DID=https://uri.did.${traefikhost}"
+        - "LOCATIONS_DID=https://loc.did.${traefikhost}"
+        - "PERSONS_DID=https://persons.did.${traefikhost}"
+        - "ORGANIZATIONS_DID=https://org.did.${traefikhost}"
       ports:
         - "8000:80"
+      volumes:
+        - ./develop-app.py:/app/main.py
 
     didbox:
       networks:
