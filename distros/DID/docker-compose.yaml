@@ -20,6 +20,9 @@ services:
         - "LOCATIONS_DID=https://loc.did.${traefikhost}"
         - "PERSONS_DID=https://persons.did.${traefikhost}"
         - "ORGANIZATIONS_DID=https://org.did.${traefikhost}"
+        - "DID_PWD=${did_pwd}"
+        - "DID_SECRET=${did_secret}"
+        - "DEBUG=True"
       ports:
         - "8000:80"
       volumes:
