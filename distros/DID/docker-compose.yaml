@@ -23,6 +23,7 @@ services:
         - "DID_PWD=${did_pwd}"
         - "DID_SECRET=${did_secret}"
         - "DEBUG=True"
+        - "TEST=2"
       ports:
         - "8000:80"
       volumes:

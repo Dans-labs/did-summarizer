@@ -20,6 +20,24 @@ from starlette.staticfiles import StaticFiles
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
 
+rcache = redis.Redis(host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], db=os.environ['REDIS_DB'])
+rcacheper = redis.Redis(host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], db=os.environ['REDIS_PER'])
+rcacheloc = redis.Redis(host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], db=os.environ['REDIS_LOC'])
+rcacheorg = redis.Redis(host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], db=os.environ['REDIS_ORG'])
+headers = {'content-type': 'application/json'}
+DEBUG = os.environ['DEBUG']
+
+def create_payload(metadata, uri):
+    data = {}
+    context = {}
+    context['@context'] = uri
+    context['metadata'] = metadata
+    context['authentication'] = []
+    context['service'] = []
+    data['didDocument'] = context
+    data['secret'] = { "doc_pwd": os.environ['DID_PWD'], "rev_pwd": os.environ['DID_SECRET'] }
+    return json.dumps(data)
+
 def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
@@ -82,13 +100,28 @@ http = urllib3.PoolManager()
 @app.get("/cache")
 async def cache(uri: str, token: Optional[str] = None):
     params = []
+    did = False
+    if rcache.exists(uri):
+        return rcache.mget(uri)[0]
+    else:
+        metadata = { 'uri': uri }
+        payload = str(create_payload(metadata, uri))
+        DID_url = "%s/%s" % (os.environ['GENERICURI_DID'], "1.0/create?method=oyd")
+        if DEBUG:
+            print(DID_url)
+            print(payload)
+        r = requests.post(DID_url, data=payload, headers=headers)
+        print(r.json())
+        did = str(r.json()["didState"]["did"])
+        if DEBUG:
+            print("DID: %s" % did)
+        rcache.mset({uri: did})
+        return did
+    return did
 
 @app.get('/version')
 def version():
     return '0.1'
 
 if __name__ == "__main__":
-    REDIS_HOST = "spiderredis"
-    
-    r = redis.Redis(host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], db=os.environ['REDIS_DB'])
     uvicorn.run(app, host="0.0.0.0", port=9266)

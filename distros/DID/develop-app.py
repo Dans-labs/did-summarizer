@@ -20,13 +20,17 @@ from starlette.staticfiles import StaticFiles
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
 
-r = redis.Redis(host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], db=os.environ['REDIS_DB'])
+rcache = redis.Redis(host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], db=os.environ['REDIS_DB'])
+rcacheper = redis.Redis(host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], db=os.environ['REDIS_PER'])
+rcacheloc = redis.Redis(host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], db=os.environ['REDIS_LOC'])
+rcacheorg = redis.Redis(host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], db=os.environ['REDIS_ORG'])
+headers = {'content-type': 'application/json'}
+DEBUG = os.environ['DEBUG']
 
-def create_payload(metadata, doi):
+def create_payload(metadata, uri):
     data = {}
     context = {}
-    context['host'] = ROOT
-    context['@context'] = "%s/dataset.xhtml?persistentId=%s" % (ROOT, doi)
+    context['@context'] = uri
     context['metadata'] = metadata
     context['authentication'] = []
     context['service'] = []
@@ -96,8 +100,23 @@ http = urllib3.PoolManager()
 @app.get("/cache")
 async def cache(uri: str, token: Optional[str] = None):
     params = []
-    did = 'didtest'
-    r.mset({uri: did})
+    did = False
+    if rcache.exists(uri):
+        return rcache.mget(uri)[0]
+    else:
+        metadata = { 'uri': uri }
+        payload = str(create_payload(metadata, uri))
+        DID_url = "%s/%s" % (os.environ['GENERICURI_DID'], "1.0/create?method=oyd")
+        if DEBUG:
+            print(DID_url)
+            print(payload)
+        r = requests.post(DID_url, data=payload, headers=headers)
+        print(r.json())
+        did = str(r.json()["didState"]["did"])
+        if DEBUG:
+            print("DID: %s" % did)
+        rcache.mset({uri: did})
+        return did
     return did
 
 @app.get('/version')
