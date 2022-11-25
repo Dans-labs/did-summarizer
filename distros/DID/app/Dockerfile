@@ -9,8 +9,9 @@ RUN pip install textacy
 
 RUN npm install -g wikidata-taxonomy
 RUN npm install -g wikibase-cli
+RUN pip install -r /app/requirements.txt
+
 COPY ./app/conf /app/conf
 COPY ./app/static/ /app/static
 COPY ./app /app
 COPY ./app/app.py /app/main.py
-RUN pip install -r /app/requirements.txt
