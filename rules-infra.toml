@@ -1,7 +1,7 @@
   [http.routers]
    # Define a connection between requests and services
      [http.routers.did]
-        rule = "Host(`did.{{ env "hostname" }}`)"
+        rule = "Host(`uri.did.{{ env "hostname" }}`)"
         entrypoints = ["websecure"]
         service = "did"
      [http.routers.did.tls]
@@ -54,15 +54,15 @@
         [http.services.did.loadBalancer]
            [[http.services.did.loadBalancer.servers]]
              url = "http://diduri:3000"
-        [http.services.didloc.loadBalancer]
-           [[http.services.didloc.loadBalancer.servers]]
-             url = "http://didlocations:3000"
-        [http.services.didorg.loadBalancer]
-           [[http.services.didorg.loadBalancer.servers]]
-             url = "http://didorganizations:3000"
-        [http.services.didper.loadBalancer]
-           [[http.services.didper.loadBalancer.servers]]
-             url = "http://didpersons:3000"
+        [http.services.locdid.loadBalancer]
+           [[http.services.locdid.loadBalancer.servers]]
+             url = "http://locdidations:3000"
+        [http.services.orddid.loadBalancer]
+           [[http.services.orddid.loadBalancer.servers]]
+             url = "http://orddidanizations:3000"
+        [http.services.perdid.loadBalancer]
+           [[http.services.perdid.loadBalancer.servers]]
+             url = "http://perdidsons:3000"
         [http.services.timeline.loadBalancer]
            [[http.services.timeline.loadBalancer.servers]]
              url = "{{ env "proxyname" }}:8095"
