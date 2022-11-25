@@ -6,11 +6,11 @@
         service = "did"
      [http.routers.did.tls]
         certResolver = "myresolver"
-     [http.routers.persondid]
+     [http.routers.perdid]
         rule = "Host(`persons.did.{{ env "hostname" }}`)"
         entrypoints = ["websecure"]
-        service = "persondid"
-     [http.routers.persondid.tls]
+        service = "perdid"
+     [http.routers.perdid.tls]
         certResolver = "myresolver"
      [http.routers.locdid]
         rule = "Host(`loc.did.{{ env "hostname" }}`)"
@@ -57,9 +57,9 @@
         [http.services.locdid.loadBalancer]
            [[http.services.locdid.loadBalancer.servers]]
              url = "http://locdidations:3000"
-        [http.services.orddid.loadBalancer]
-           [[http.services.orddid.loadBalancer.servers]]
-             url = "http://orddidanizations:3000"
+        [http.services.orgdid.loadBalancer]
+           [[http.services.orgdid.loadBalancer.servers]]
+             url = "http://orgdidanizations:3000"
         [http.services.perdid.loadBalancer]
            [[http.services.perdid.loadBalancer.servers]]
              url = "http://perdidsons:3000"
