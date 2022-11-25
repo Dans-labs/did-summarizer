@@ -16,7 +16,7 @@
         rule = "Host(`loc.did.{{ env "hostname" }}`)"
         entrypoints = ["websecure"]
         service = "locdid"
-     [http.routers.orgdid.tls]
+     [http.routers.locdid.tls]
         certResolver = "myresolver"
      [http.routers.orgdid]
         rule = "Host(`org.did.{{ env "hostname" }}`)"
