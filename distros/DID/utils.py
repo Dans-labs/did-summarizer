@@ -1,6 +1,9 @@
 from pymongo import MongoClient
 import os
-# from utils import connectmongo, storekey
+import redis
+import json
+import requests
+DEBUG = os.environ['DEBUG']
 
 def connectmongo():
     client = MongoClient(os.environ['MONGO_HOST'], int(os.environ['MONGO_PORT']))
@@ -11,5 +14,55 @@ def connectmongo():
 def storekey(coll, thisdoc):
     #doc1 = {"name": "Ram", "age": "26", "city": "Hyderabad"}
     coll.insert_one(thisdoc)
+    return
+
+def create_payload(metadata, uri):
+    data = {}
+    context = {}
+    context['@context'] = uri
+    context['metadata'] = metadata
+    context['authentication'] = []
+    context['service'] = []
+    data['didDocument'] = context
+    data['secret'] = { "doc_pwd": os.environ['DID_PWD'], "rev_pwd": os.environ['DID_SECRET'] }
+    return json.dumps(data)
+
+def return_did(uri, metadata=None):
+    did = False
+    if uri:
+        metadata = { 'uri': uri }
+        payload = str(create_payload(metadata, uri))
+        DID_url = "%s/%s" % (os.environ['GENERICURI_DID'], "1.0/create?method=oyd")
+        if DEBUG:
+            print(DID_url)
+            print(payload)
+        r = requests.post(DID_url, data=payload, headers=headers)
+        print(r.json())
+        did = str(r.json()["didState"]["did"])
+        if DEBUG:
+            print("DID: %s" % did)
+        rcache.mset({uri: did})
+    return did
+
+def create_did(rcache, uri, collection):
+    if uri: 
+        headers = {'content-type': 'application/json'}
+        metadata = { 'uri': uri }
+        payload = str(create_payload(metadata, uri))
+        DID_url = "%s/%s" % (os.environ['GENERICURI_DID'], "1.0/create?method=oyd")
+        if DEBUG:
+            print(DID_url)
+            print(payload)
+        r = requests.post(DID_url, data=payload, headers=headers)
+        print(r.json())
+        didresponse = r.json()
+        did = str(r.json()["didState"]["did"])
+        doc = {}
+        doc[did] = didresponse
+        storekey(collection, doc)
+        if DEBUG:
+            print("DID: %s" % did)
+        rcache.mset({uri: did})
+        return did
     return
 
