@@ -8,12 +8,27 @@ DEBUG = os.environ['DEBUG']
 def connectmongo():
     client = MongoClient(os.environ['MONGO_HOST'], int(os.environ['MONGO_PORT']))
     db = client[os.environ['MONGO_DB']]
-    coll = db[os.environ['MONGO_COLLECTION']]
-    return coll
+    collections = {}
+    collections['keys'] = db[os.environ['MONGO_COLLECTION']]
+    collections['uri'] = db[os.environ['MONGO_URI']]
+    return collections
 
 def storekey(coll, thisdoc):
     #doc1 = {"name": "Ram", "age": "26", "city": "Hyderabad"}
     coll.insert_one(thisdoc)
+    return
+
+def rebuildcache(rcache, coll):
+    cursor = coll.find({})
+    for document in cursor:
+          rcache.mset({ document['uri']: document['did']})
+    return
+
+def getmongocache(rcache, coll):
+    cursor = coll.find({})
+    data = []
+    for document in cursor:
+          data.append({ document['uri']: document['did']})
     return
 
 def create_payload(metadata, uri):
@@ -59,7 +74,11 @@ def create_did(rcache, uri, collection):
         did = str(r.json()["didState"]["did"])
         doc = {}
         doc[did] = didresponse
-        storekey(collection, doc)
+        storekey(collection['keys'], doc)
+        rdoc = {}
+        rdoc['uri'] = uri
+        rdoc['did'] = did
+        storekey(collection['uri'], rdoc)
         if DEBUG:
             print("DID: %s" % did)
         rcache.mset({uri: did})

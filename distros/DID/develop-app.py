@@ -19,13 +19,14 @@ from starlette.responses import FileResponse, RedirectResponse
 from starlette.staticfiles import StaticFiles
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
-from utils import connectmongo, storekey, create_did
+from utils import connectmongo, storekey, create_did, rebuildcache
 
 rcache = redis.Redis(host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], db=os.environ['REDIS_DB'])
 rcacheper = redis.Redis(host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], db=os.environ['REDIS_PER'])
 rcacheloc = redis.Redis(host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], db=os.environ['REDIS_LOC'])
 rcacheorg = redis.Redis(host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], db=os.environ['REDIS_ORG'])
 collection = connectmongo()
+rebuildcache(rcache, collection['uri'])
 DEBUG = os.environ['DEBUG']
 
 class Item(BaseModel):
@@ -126,23 +127,6 @@ async def cache(uri: str, token: Optional[str] = None):
         return rcache.mget(uri)[0]
     else:
         return create_did(rcache, uri, collection)
-#        metadata = { 'uri': uri }
-#        payload = str(create_payload(metadata, uri))
-#        DID_url = "%s/%s" % (os.environ['GENERICURI_DID'], "1.0/create?method=oyd")
-#        if DEBUG:
-#            print(DID_url)
-#            print(payload)
-#        r = requests.post(DID_url, data=payload, headers=headers)
-#        print(r.json())
-#        didresponse = r.json()
-#        did = str(r.json()["didState"]["did"])
-#        doc = {}
-#        doc[did] = didresponse
-#        storekey(collection, doc)
-#        if DEBUG:
-#            print("DID: %s" % did)
-#        rcache.mset({uri: did})
-#        return did
     return did
 
 @app.post("/cache")
