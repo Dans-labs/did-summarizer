@@ -20,7 +20,7 @@ services:
         - "MONGO_PORT=27017"
         - "MONGO_DB=did"
         - "MONGO_COLLECTION=privatekeys"
-        - "MONGO_URI=reserseindex"
+        - "MONGO_URI=reverseuri"
         - "GENERICURI_DID=https://uri.did.${traefikhost}"
         - "LOCATIONS_DID=https://loc.did.${traefikhost}"
         - "PERSONS_DID=https://persons.did.${traefikhost}"
