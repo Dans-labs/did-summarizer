@@ -16,18 +16,23 @@ services:
         - "REDIS_LOC=2"
         - "REDIS_PER=3"
         - "REDIS_ORG=4"
+        - "MONGO_HOST=mongostorage"
+        - "MONGO_PORT=27017"
+        - "MONGO_DB=did"
+        - "MONGO_COLLECTION=privatekeys"
         - "GENERICURI_DID=https://uri.did.${traefikhost}"
         - "LOCATIONS_DID=https://loc.did.${traefikhost}"
         - "PERSONS_DID=https://persons.did.${traefikhost}"
         - "ORGANIZATIONS_DID=https://org.did.${traefikhost}"
         - "DID_PWD=${did_pwd}"
         - "DID_SECRET=${did_secret}"
-        - "DEBUG=True"
-        - "TEST=2"
+        - "DEBUG=False"
+        - "TEST=1"
       ports:
         - "8000:80"
       volumes:
         - ./develop-app.py:/app/main.py
+        - ./utils.py:/app/utils.py
 
     didbox:
       networks:
@@ -93,6 +98,7 @@ services:
       networks:
         - traefik
       command: mongod --setParameter failIndexKeyTooLong=false
+      container_name: mongostorage
       image: mongo:4.0
       ports:
          - "27200:27017" # map port to none standard port, to avoid conflicts with locally installed mongo

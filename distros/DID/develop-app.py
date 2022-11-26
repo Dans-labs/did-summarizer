@@ -19,11 +19,13 @@ from starlette.responses import FileResponse, RedirectResponse
 from starlette.staticfiles import StaticFiles
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
+from utils import connectmongo, storekey
 
 rcache = redis.Redis(host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], db=os.environ['REDIS_DB'])
 rcacheper = redis.Redis(host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], db=os.environ['REDIS_PER'])
 rcacheloc = redis.Redis(host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], db=os.environ['REDIS_LOC'])
 rcacheorg = redis.Redis(host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], db=os.environ['REDIS_ORG'])
+collection = connectmongo()
 headers = {'content-type': 'application/json'}
 DEBUG = os.environ['DEBUG']
 
@@ -132,7 +134,11 @@ async def cache(uri: str, token: Optional[str] = None):
             print(payload)
         r = requests.post(DID_url, data=payload, headers=headers)
         print(r.json())
+        didresponse = r.json()
         did = str(r.json()["didState"]["did"])
+        doc = {}
+        doc[did] = didresponse
+        storekey(collection, doc)
         if DEBUG:
             print("DID: %s" % did)
         rcache.mset({uri: did})
