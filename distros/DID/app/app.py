@@ -19,15 +19,20 @@ from starlette.responses import FileResponse, RedirectResponse
 from starlette.staticfiles import StaticFiles
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
+from utils import connectmongo, storekey, create_did, rebuildcache
 
 rcache = redis.Redis(host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], db=os.environ['REDIS_DB'])
 rcacheper = redis.Redis(host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], db=os.environ['REDIS_PER'])
 rcacheloc = redis.Redis(host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], db=os.environ['REDIS_LOC'])
 rcacheorg = redis.Redis(host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], db=os.environ['REDIS_ORG'])
-headers = {'content-type': 'application/json'}
+collection = connectmongo()
+rebuildcache(rcache, collection['uri'])
 DEBUG = os.environ['DEBUG']
 
-def create_payload(metadata, uri):
+class Item(BaseModel):
+    text: str
+
+def create_payload2(metadata, uri):
     data = {}
     context = {}
     context['@context'] = uri
@@ -37,6 +42,23 @@ def create_payload(metadata, uri):
     data['didDocument'] = context
     data['secret'] = { "doc_pwd": os.environ['DID_PWD'], "rev_pwd": os.environ['DID_SECRET'] }
     return json.dumps(data)
+
+def return_did2(uri, metadata=None):
+    did = False
+    if uri:
+        metadata = { 'uri': uri }
+        payload = str(create_payload(metadata, uri))
+        DID_url = "%s/%s" % (os.environ['GENERICURI_DID'], "1.0/create?method=oyd")
+        if DEBUG:
+            print(DID_url)
+            print(payload)
+        r = requests.post(DID_url, data=payload, headers=headers)
+        print(r.json())
+        did = str(r.json()["didState"]["did"])
+        if DEBUG:
+            print("DID: %s" % did)
+        rcache.mset({uri: did})
+    return did
 
 def custom_openapi():
     if app.openapi_schema:
@@ -104,20 +126,21 @@ async def cache(uri: str, token: Optional[str] = None):
     if rcache.exists(uri):
         return rcache.mget(uri)[0]
     else:
-        metadata = { 'uri': uri }
-        payload = str(create_payload(metadata, uri))
-        DID_url = "%s/%s" % (os.environ['GENERICURI_DID'], "1.0/create?method=oyd")
-        if DEBUG:
-            print(DID_url)
-            print(payload)
-        r = requests.post(DID_url, data=payload, headers=headers)
-        print(r.json())
-        did = str(r.json()["didState"]["did"])
-        if DEBUG:
-            print("DID: %s" % did)
-        rcache.mset({uri: did})
-        return did
+        return create_did(rcache, uri, collection)
     return did
+
+@app.post("/cache")
+async def root(info : Request):
+    data = await info.json()
+    if 'url' in data:
+        urls = {}
+        for url in data['url']:
+            if rcache.exists(url):
+                urls[url] = rcache.mget(url)[0]
+            else:
+                urls[url] = create_did(rcache, url, collection)
+        return urls
+    return {"message": f"You wrote: %s" % str(data)}
 
 @app.get('/version')
 def version():
