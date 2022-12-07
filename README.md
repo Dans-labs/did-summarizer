@@ -15,15 +15,18 @@ docker-compose up -d
 ```
 
 # Testing
-Use simple test to send strings to generate DIDs:
+Use simple test to send strings and generate DIDs for every uri sample:
 ```
 bash ./distros/DID/tests/simple-test.sh 
 ```
-Response should be like this:
+Response should provide the list of URIs with corresponding DIDs:
 ```
 {"uri_1":"did:oyd:zQmXYw1zsGNREhp9aWVdPxqozCYwRaCvoh7nRYwSsWqQGJK","uri_2":"did:oyd:zQmZRG1MrrkKMTSPiuxv7C1oWix7bWufpwg6NntXK7DgQmQ","uri_3":"did:oyd:zQmU1B3Pf1nBgKVCSqQgLSKrkb7fKHzXTzEvdf4vuC5VroD"}
 ```
-
+Example of request to resolve some DID:
+```
+curl https://dev.uniresolver.io/1.0/identifiers/did:oyd:zQmXYw1zsGNREhp9aWVdPxqozCYwRaCvoh7nRYwSsWqQGJK
+``` 
 
 # DID names
 
