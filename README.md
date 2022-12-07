@@ -7,10 +7,23 @@ Funded by CLARIAH project
 
 ```
 cp .env_sample .env
+docker network create traefik
 export traefikhost=somedomain.dans.knaw.nl
+docker-compose up -d
 cd ./distros/DID
 docker-compose up -d
 ```
+
+# Testing
+Use simple test to send strings to generate DIDs:
+```
+bash ./distros/DID/tests/simple-test.sh 
+```
+Response should be like this:
+```
+{"uri_1":"did:oyd:zQmXYw1zsGNREhp9aWVdPxqozCYwRaCvoh7nRYwSsWqQGJK","uri_2":"did:oyd:zQmZRG1MrrkKMTSPiuxv7C1oWix7bWufpwg6NntXK7DgQmQ","uri_3":"did:oyd:zQmU1B3Pf1nBgKVCSqQgLSKrkb7fKHzXTzEvdf4vuC5VroD"}
+```
+
 
 # DID names
 
