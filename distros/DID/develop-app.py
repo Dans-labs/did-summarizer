@@ -20,6 +20,7 @@ from starlette.staticfiles import StaticFiles
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
 from utils import connectmongo, storekey, create_did, rebuildcache
+from Namespaces import NameSpaces
 
 rcache = redis.Redis(host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], db=os.environ['REDIS_DB'])
 rcacheper = redis.Redis(host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], db=os.environ['REDIS_PER'])
@@ -141,6 +142,17 @@ async def root(info : Request):
                 urls[url] = create_did(rcache, url, collection)
         return urls
     return {"message": f"You wrote: %s" % str(data)}
+
+from Namespaces import NameSpaces
+
+@app.get("/summarizer")
+async def summarizer(url: str, token: Optional[str] = None):
+    ns = NameSpaces(url)
+    ns.getstatements()
+    data = {}
+    data['prefixes'] = ns.getnamespaces()
+    data['stats'] = ns.getstats()
+    return data
 
 @app.get('/version')
 def version():

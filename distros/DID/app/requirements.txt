@@ -1,4 +1,5 @@
 git+https://github.com/AUSSDA/pyDataverse.git@develop
+rdflib
 datefinder
 asyncio
 pymongo
