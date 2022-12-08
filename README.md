@@ -32,6 +32,48 @@ Example of request to resolve some DID:
 curl https://dev.uniresolver.io/1.0/identifiers/did:oyd:zQmXYw1zsGNREhp9aWVdPxqozCYwRaCvoh7nRYwSsWqQGJK
 ``` 
 
+# Summarizer example
+
+```
+curl -X 'GET' \
+  'http://0.0.0.0:8000/summarizer?url=https%3A%2F%2Fraw.githubusercontent.com%2FAKSW%2Fdssn.rdf%2Fmaster%2Fnamespace.ttl' \
+  -H 'accept: application/json'
+```
+
+Response body:
+```
+{
+  "statements": {
+    "statements": 119,
+    "unique objects": 64,
+    "unique predicates": 25,
+    "unique subjects": 22
+  },
+  "prefixes": {
+    "http://www.w3.org/2000/01/rdf-schema#": "rdfs",
+    "http://www.w3.org/2002/07/owl#": "owl",
+    "http://www.w3.org/2004/02/skos/core#": "skos",
+    "http://xmlns.com/foaf/0.1/": "foaf",
+    "http://rdfs.org/sioc/ns#": "sioc",
+    "http://usefulinc.com/ns/doap#": "doap",
+    "http://www.w3.org/2003/06/sw-vocab-status/ns#": "vs",
+    "http://purl.org/dc/terms/": "dct",
+    "http://purl.org/net/dssn/": "dssn"
+  },
+  "stats": {
+    "dssn": 126,
+    "rdfs": 60,
+    "vs": 13,
+    "doap": 1,
+    "foaf": 20,
+    "owl": 15,
+    "dct": 1,
+    "sioc": 11,
+    "skos": 1
+  }
+}
+```
+
 # DID names
 
 By default DID containers available for different ontologies:
