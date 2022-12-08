@@ -148,8 +148,8 @@ from Namespaces import NameSpaces
 @app.get("/summarizer")
 async def summarizer(url: str, token: Optional[str] = None):
     ns = NameSpaces(url)
-    ns.getstatements()
     data = {}
+    data['statements'] = ns.getstatements()
     data['prefixes'] = ns.getnamespaces()
     data['stats'] = ns.getstats()
     return data
