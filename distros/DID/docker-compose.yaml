@@ -31,9 +31,9 @@ services:
         - "TEST=1"
       ports:
         - "8000:80"
-      volumes:
-        - ./develop-app.py:/app/main.py
-        - ./utils.py:/app/utils.py
+        #      volumes:
+        #       - ./develop-app.py:/app/main.py
+        #- ./utils.py:/app/utils.py
 
     didbox:
       networks:
