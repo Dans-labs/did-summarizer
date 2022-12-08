@@ -1,0 +1,112 @@
+version: '3.7'
+# Settings and configurations that are common for all containers
+
+services:
+    api:
+      networks:
+        - traefik
+      container_name: api
+      build: .
+      environment:
+        - "DID_DB=external"
+        - "REDIS_HOST=redis"
+        - "REDIS_PORT=6379"
+        - "REDIS_DB=0"
+        - "REDIS_GENERIC=1"
+        - "REDIS_LOC=2"
+        - "REDIS_PER=3"
+        - "REDIS_ORG=4"
+        - "MONGO_HOST=mongostorage"
+        - "MONGO_PORT=27017"
+        - "MONGO_DB=did"
+        - "MONGO_COLLECTION=privatekeys"
+        - "MONGO_URI=reverseuri"
+        - "GENERICURI_DID=https://uri.did.${traefikhost}"
+        - "LOCATIONS_DID=https://loc.did.${traefikhost}"
+        - "PERSONS_DID=https://persons.did.${traefikhost}"
+        - "ORGANIZATIONS_DID=https://org.did.${traefikhost}"
+        - "DID_PWD=${did_pwd}"
+        - "DID_SECRET=${did_secret}"
+        - "DEBUG=False"
+        - "TEST=1"
+      ports:
+        - "8000:80"
+      volumes:
+        - ./develop-app.py:/app/main.py
+        - ./utils.py:/app/utils.py
+
+    didbox:
+      networks:
+        - traefik
+      container_name: diduri
+      image: oydeu/oydid-base #:220829e
+      environment:
+        - "DID_DB=external"
+      ports:
+        - "3000:3000"
+
+    didboxloc:
+      networks:
+        - traefik
+      image: oydeu/oydid-base #:220829e
+      container_name: locations
+      environment:
+        - "DID_DB=external"
+      ports:
+        - "3001:3000"
+
+    didboxorg:
+      networks:
+        - traefik
+      container_name: organizations
+      image: oydeu/oydid-base #:220829e
+      environment:
+        - "DID_DB=external"
+      ports:
+        - "3002:3000"
+
+    didboxper:
+      networks:
+        - traefik
+      image: oydeu/oydid-base #:220829e
+      container_name: persons
+      environment:
+        - "DID_DB=external"
+      ports:
+        - "3003:3000"
+
+    dbbox:
+      networks:
+        - traefik
+      image: postgres:12.1
+      container_name: db
+      environment:
+        POSTGRES_HOST_AUTH_METHOD: "trust"
+      volumes:
+        - ./data/did_data:/var/lib/postgresql/data
+      ports:
+        - "5432:5432"
+
+    redis:
+      networks:
+        - traefik
+      image: "redis:alpine"
+      container_name: redis
+      ports:
+        - "6385:6379" 
+
+    mongo:
+      networks:
+        - traefik
+      command: mongod --setParameter failIndexKeyTooLong=false
+      container_name: mongostorage
+      image: mongo:4.0
+      ports:
+         - "27200:27017" # map port to none standard port, to avoid conflicts with locally installed mongo
+      volumes:
+        - ./data/mongo:/data/db
+
+networks:
+  traefik:
+    external: true
+
