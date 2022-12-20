@@ -10,6 +10,8 @@ import json
 import urllib3, io
 import pandas as pd
 import redis
+import subprocess
+import json
 from fastapi import FastAPI, Request, Response
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -120,6 +122,10 @@ if 'config' in os.environ:
     configfile = os.environ['config']
 http = urllib3.PoolManager()
 
+@app.get("/")
+async def home():
+    return "CLARIAH Vocabulary Summarizer v.0.1 https://github.com/Dans-labs/did-summarizer"
+
 @app.get("/cache")
 async def cache(uri: str, token: Optional[str] = None):
     params = []
@@ -153,6 +159,24 @@ async def summarizer(url: str, token: Optional[str] = None):
     data['prefixes'] = ns.getnamespaces()
     data['stats'] = ns.getstats()
     return data
+
+@app.get("/recommend")
+async def recommend(searchTerm: str, searchClass: Optional[str] = None, endpoint: Optional[str] = None):
+    cmd = "yarn --cwd /app/vocabulary-recommender recommend -t \'%s\' -f json" % searchTerm
+    if searchClass:
+        cmd = "%s -c %s" % (cmd, searchClass)
+    if endpoint:
+        cmd = "%s -e %s" % (cmd, endpoint)
+    task = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+    data = task.stdout.read().decode("utf-8").split('\n')
+    assert task.wait() == 0
+    data = data[2:]
+    data = data[:-2]
+    if data:
+        #json.dumps(json.loads(' '.join(data))))
+        d = json.dumps(json.loads(' '.join(data)), indent=4, default=str)
+        return Response(content=d, media_type="application/json")
+    return False
 
 @app.get('/version')
 def version():
