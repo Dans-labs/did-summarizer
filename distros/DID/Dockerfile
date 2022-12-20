@@ -12,3 +12,9 @@ RUN npm install -g wikibase-cli
 COPY ./app /app
 COPY ./app/app.py /app/main.py
 RUN pip install -r /app/requirements.txt
+
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+RUN apt-get update && apt-get -y install yarn
+RUN git clone https://github.com/CLARIAH/vocabulary-recommender
+RUN cd vocabulary-recommender;yarn;yarn build
