@@ -74,6 +74,6 @@
              url = "{{ env "proxyname" }}:3030"
         [http.services.api.loadBalancer]
            [[http.services.api.loadBalancer.servers]]
-             url = "http://api"
+             url = "http://didapi"
 
 
