@@ -7,7 +7,7 @@ The main aim of the Summarizer service is to gain an overview about which vocabu
 
 To bridge between different knowledge domains it is needed to find communalities, cross-walks, mappings between vocabularies. A prerequisite for this is to gain an overview what vocabularies exist (VOCABULARY part) and how they are used (DATASET part). Despite of many existing registries this problem is by no means solved, nor are there standard, off-the shelf solutions for gaining such an overview.
 
-Decentralized identifiers (DIDs) are being used to create resolvable globally accessible unique and persistent identifiers to support various Linked Data tasks FAIR way:
+Decentralized identifiers (DIDs) are being used to create resolvable globally accessible unique and persistent identifiers to support various Linked Data tasks in FAIR way:
 * assign DID to SPARQL query to make it persistent 
 * cache vocabulary concept content and relationships
 * store and get statistics of usage for vocabulary concepts available in the time dimension, just like the Internet Archive
@@ -93,7 +93,48 @@ curl -X 'GET' \
   -H 'accept: application/json'
 ```
 
-You can find information about supported parameters and use cases in [Vocabulary Recommender Github repo](https://github.com/CLARIAH/vocabulary-recommender).
+Response:
+
+```
+[
+  [
+    {
+      "searchTerm": "person",
+      "vocabs": [
+        "https://w3id.org/pnv#"
+      ],
+      "homogeneous": [
+        {
+          "iri": "https://w3id.org/pnv#Person",
+          "score": 1,
+          "vocabPrefix": "https://w3id.org/pnv#",
+          "vocabDomain": "https://w3id.org/pnv#",
+          "description": "A Person is a human being whose individual existence can somehow be documented",
+          "category": "class"
+        }
+      ],
+      "single": [
+        {
+          "iri": "http://xmlns.com/foaf/0.1/Person",
+          "score": 0.8853529652138054,
+          "vocabPrefix": "foaf",
+          "vocabDomain": "http://xmlns.com/foaf/0.1/",
+          "description": "A person.",
+          "category": "class"
+        },
+        {
+          "iri": "https://schema.org/Person",
+          "score": 0.7432885949870411,
+          "vocabPrefix": "https://schema.org/",
+          "vocabDomain": "https://schema.org/",
+          "description": "A person (alive, dead, undead, or fictional).",
+          "category": "class"
+        },
+...
+]
+```
+
+You can find more information about supported parameters and use cases in CLARIAH Vocabulary Recommender [Github repo](https://github.com/CLARIAH/vocabulary-recommender).
 
 # DID names
 
