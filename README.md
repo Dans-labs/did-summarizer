@@ -36,7 +36,7 @@ curl https://dev.uniresolver.io/1.0/identifiers/did:oyd:zQmXYw1zsGNREhp9aWVdPxqo
 
 ```
 curl -X 'GET' \
-  'http://0.0.0.0:8000/summarizer?url=https%3A%2F%2Fraw.githubusercontent.com%2FAKSW%2Fdssn.rdf%2Fmaster%2Fnamespace.ttl' \
+  'http://0.0.0.0:8001/summarizer?url=https%3A%2F%2Fraw.githubusercontent.com%2FAKSW%2Fdssn.rdf%2Fmaster%2Fnamespace.ttl' \
   -H 'accept: application/json'
 ```
 
