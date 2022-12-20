@@ -23,6 +23,7 @@ from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
 from utils import connectmongo, storekey, create_did, rebuildcache
 from Namespaces import NameSpaces
+import arrow
 
 rcache = redis.Redis(host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], db=os.environ['REDIS_DB'])
 rcacheper = redis.Redis(host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], db=os.environ['REDIS_PER'])
@@ -152,12 +153,25 @@ async def root(info : Request):
 from Namespaces import NameSpaces
 
 @app.get("/summarizer")
-async def summarizer(url: str, token: Optional[str] = None):
+async def summarizer(url: str, token: Optional[str] = None, persist: Optional[str] = None):
     ns = NameSpaces(url)
     data = {}
     data['statements'] = ns.getstatements()
     data['prefixes'] = ns.getnamespaces()
     data['stats'] = ns.getstats()
+    if persist:
+        if 'stats' in data:
+            urls = {}
+            utc = arrow.utcnow()
+            local = utc.to(os.environ['TIMEZONE'])
+            data['date'] = local.format('YYYY-MM-DD HH:mm:ss ZZ')
+            data['timezone'] = os.environ['TIMEZONE']
+            metadata = { 'uri': url, 'statistics': data}
+            if rcache.exists(url):
+                urls[url] = rcache.mget(url)[0]
+            else:
+                urls[url] = create_did(rcache, url, collection, metadata)
+            data['did'] = urls[url]
     return data
 
 @app.get("/recommend")

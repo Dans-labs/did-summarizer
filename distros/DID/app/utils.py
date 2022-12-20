@@ -59,10 +59,11 @@ def return_did(uri, metadata=None):
         rcache.mset({uri: did})
     return did
 
-def create_did(rcache, uri, collection):
-    if uri: 
+def create_did(rcache, uri, collection, metadata=None):
+    if uri:
         headers = {'content-type': 'application/json'}
-        metadata = { 'uri': uri }
+        if not metadata:
+            metadata = { 'uri': uri }
         payload = str(create_payload(metadata, uri))
         DID_url = "%s/%s" % (os.environ['GENERICURI_DID'], "1.0/create?method=oyd")
         if DEBUG:
