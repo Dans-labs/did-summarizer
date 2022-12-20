@@ -28,6 +28,7 @@ services:
         - "DID_PWD=${did_pwd}"
         - "DID_SECRET=${did_secret}"
         - "DEBUG=False"
+        - "TIMEZONE=Europe/Amsterdam"
         - "TEST=1"
       ports:
         - "8001:80"
