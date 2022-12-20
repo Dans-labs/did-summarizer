@@ -2,10 +2,10 @@ version: '3.7'
 # Settings and configurations that are common for all containers
 
 services:
-    api:
+    didapi:
       networks:
         - traefik
-      container_name: api
+      container_name: didapi
       build: .
       environment:
         - "DID_DB=external"
@@ -30,7 +30,7 @@ services:
         - "DEBUG=False"
         - "TEST=1"
       ports:
-        - "8000:80"
+        - "8001:80"
         #      volumes:
         #       - ./develop-app.py:/app/main.py
         #- ./utils.py:/app/utils.py
@@ -102,7 +102,7 @@ services:
       container_name: mongostorage
       image: mongo:4.0
       ports:
-         - "27200:27017" # map port to none standard port, to avoid conflicts with locally installed mongo
+         - "27201:27017" # map port to none standard port, to avoid conflicts with locally installed mongo
       volumes:
         - ./data/mongo:/data/db
 
