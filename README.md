@@ -3,9 +3,16 @@ Linked Data summarizer driven by Decentralized Identifiers (DIDs)
 
 Funded by CLARIAH project
 
-The main aim of the Summarizer service is to gain an overview about which vocabularies are already used in CLARIAH, or might be useful in CLARIAH. The core is to build an analyzing pipeline containing data collection, vocabulary analysis, report. While concentrating on the automatised pipeline, we also indicate at which point where expert/manual curation is needed.
+The main aim of the Summarizer service is to gain an overview about which vocabularies are already used in CLARIAH, or might be useful in CLARIAH. The core is to build an analyzing pipeline containing data collection, vocabulary analysis, report. While concentrating on the automatised pipeline, we also indicate at which point where expert/manual curation is needed. 
 
 To bridge between different knowledge domains it is needed to find communalities, cross-walks, mappings between vocabularies. A prerequisite for this is to gain an overview what vocabularies exist (VOCABULARY part) and how they are used (DATASET part). Despite of many existing registries this problem is by no means solved, nor are there standard, off-the shelf solutions for gaining such an overview.
+
+Decentralized identifiers (DIDs) are being used to create resolvable globally accessible unique and persistent identifiers to support various Linked Data tasks FAIR way:
+* assign DID to SPARQL query to make it persistent 
+* cache vocabulary concept content and relationships
+* store and get statistics of usage for vocabulary concepts available in the time dimension, just like the Internet Archive
+* assign unique DID to other services used in CLARIAH pipelines
+...
 
 # Installation
 
@@ -73,6 +80,20 @@ Response body:
   }
 }
 ```
+
+# Vocabulary recommender integration
+
+Vocabulary Recommender Command-line interface (CLI) was developed by [Triply](http://triply.cc) and provides a recommendation interface which returns relevant Internationalized Resource Identifiers (IRIs) based on the search input. It works with SPARQL or Elasticsearch endpoints which contain relevant vocabulary datasets. [DANS](https://dans.knaw.nl/en) has created a service out of it.
+
+Usage example:
+
+```
+curl -X 'GET' \
+  'http://0.0.0.0:8001/recommend?searchTerm=person&searchClass=class' \
+  -H 'accept: application/json'
+```
+
+You can find information about supported parameters and use cases in [Vocabulary Recommender Github repo](https://github.com/CLARIAH/vocabulary-recommender).
 
 # DID names
 
