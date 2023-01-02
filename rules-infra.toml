@@ -48,6 +48,10 @@
         service = "api"
      [http.routers.api.tls]
         certResolver = "myresolver"
+     [http.routers.minio]
+        rule = "Host(`s3.{{ env "hostname" }}`)"
+        entrypoints = ["websecure"]
+        service = "minio"
 
  [http.services]
         # Define how to reach an existing service on our infrastructure
@@ -75,5 +79,11 @@
         [http.services.api.loadBalancer]
            [[http.services.api.loadBalancer.servers]]
              url = "http://didapi"
+        [http.services.minio.loadBalancer]
+           [[http.services.minio.loadBalancer.servers]]
+             url = "http://minio:9003"
+        [http.services.minioapi.loadBalancer]
+           [[http.services.minioapi.loadBalancer.servers]]
+             url = "http://minio:9002"
 
 
