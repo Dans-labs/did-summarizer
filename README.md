@@ -151,6 +151,31 @@ API endpoint with cache and resolver:
 
 All concepts are being cached in RAM using Redis framework and preserved in MongoDB database. After every restart the key:value pair for URI:DID reindexed and available for lookup in the cache. It should be possible to move all DIDs data from one network to another without too much efforts.  
 
+# Archiving layer
+
+Content archiving functionality is optional and implemented by using S3 protocol compliant with cloud storage services like AWS, Amazon Blob and Google Cloud Platform (GCP). By default the contents of every object or web page with global DID identifier can be stored in MinIO High Performance Object Storage. 
+
+You can also get direct access to storage by using MinIO client. Installation instruction below:
+```
+curl https://dl.min.io/client/mc/release/linux-ppc64le/mc \
+  --create-dirs \
+  -o ~/minio-binaries/mc
+
+chmod +x $HOME/minio-binaries/mc
+export PATH=$PATH:$HOME/minio-binaries/
+```
+
+MinIO storage layer has web interface and API and can be accessible through your domain name. For example, for storage.clariah.nl it will create s3.storage.clariah.nl and s3api.storage.clariah.nl.
+Login into s3.storage.clariah.nl and create some default user with credentials minio01:somepass123, define new bucket and run this command to create MinIO alias: 
+```
+mc alias set storage https://s3api.clients.mediaquantum.eu minio01 somepass123
+```
+if everything fine, ths command should list all available buckets:
+```
+mc ls 
+```
+Read more information how to setup [MinIO client](https://min.io/docs/minio/linux/reference/minio-mc.html).
+
 # Use cases
 
 The idea of DID summarizer is to assign unique globally resolvable decentralized identifier DID to any string, particulary to URLs and URIs. 
