@@ -1,7 +1,7 @@
 # did-summarizer
 Linked Data summarizer driven by Decentralized Identifiers (DIDs)
 
-Funded by CLARIAH project
+Developed by DANS Labs, funded by [CLARIAH project](http://clariah.nl).
 
 The main aim of the Summarizer service is to gain an overview about which vocabularies are already used in CLARIAH, or might be useful in CLARIAH. The core is to build an analyzing pipeline containing data collection, vocabulary analysis, report. While concentrating on the automatised pipeline, we also indicate at which point where expert/manual curation is needed. 
 
@@ -164,13 +164,12 @@ curl https://dl.min.io/client/mc/release/linux-ppc64le/mc \
 chmod +x $HOME/minio-binaries/mc
 export PATH=$PATH:$HOME/minio-binaries/
 ```
-
 MinIO storage layer has web interface and API and can be accessible through your domain name. For example, for storage.clariah.nl it will create s3.storage.clariah.nl and s3api.storage.clariah.nl.
 Login into s3.storage.clariah.nl and create some default user with credentials minio01:somepass123, define new bucket and run this command to create MinIO alias: 
 ```
 mc alias set storage https://s3api.storage.clariah.nl minio01 somepass123
 ```
-if everything fine, ths command should list all available buckets:
+if everything fine, the command below should list all available buckets:
 ```
 mc ls 
 ```
