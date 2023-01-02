@@ -168,7 +168,7 @@ export PATH=$PATH:$HOME/minio-binaries/
 MinIO storage layer has web interface and API and can be accessible through your domain name. For example, for storage.clariah.nl it will create s3.storage.clariah.nl and s3api.storage.clariah.nl.
 Login into s3.storage.clariah.nl and create some default user with credentials minio01:somepass123, define new bucket and run this command to create MinIO alias: 
 ```
-mc alias set storage https://s3api.clients.mediaquantum.eu minio01 somepass123
+mc alias set storage https://s3api.storage.clariah.nl minio01 somepass123
 ```
 if everything fine, ths command should list all available buckets:
 ```
