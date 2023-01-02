@@ -14,6 +14,19 @@ Decentralized identifiers (DIDs) are being used to create resolvable globally ac
 * assign unique DID to other services used in CLARIAH pipelines
 ...
 
+# Prerequisites
+
+DID Summarizer use Traefik Cloud Proxy as a backbone to route all services. If you want to install this infrastructure on your own server with dedicated domain name, you should put * in DNS records in order to allow traefik to create subdomains and generate SSL certificates for every service. For example, if your domain name is dev.clariah.nl you should add DNS record like \*.did.clariah.nl pointing to your server. 
+
+The list of available services:
+* uri.did.${hostname} for general purpose content DIDs
+* persons.did.${hostname} for persons DIDs identifiers
+* loc.did.${hostname} for locations DIDs
+* org.did.${hostname} for organizations DIDs
+* s3.did.${hostname} to access MinIO storage dashboard
+* s3api.did.${hostname} for MinIO API 
+...
+
 # Installation
 
 ```
