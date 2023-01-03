@@ -1,7 +1,7 @@
 # did-summarizer
 Linked Data summarizer driven by Decentralized Identifiers (DIDs)
 
-Funded by CLARIAH project
+Developed by DANS Labs, funded by [CLARIAH project](http://clariah.nl).
 
 The main aim of the Summarizer service is to gain an overview about which vocabularies are already used in CLARIAH, or might be useful in CLARIAH. The core is to build an analyzing pipeline containing data collection, vocabulary analysis, report. While concentrating on the automatised pipeline, we also indicate at which point where expert/manual curation is needed. 
 
@@ -12,6 +12,20 @@ Decentralized identifiers (DIDs) are being used to create resolvable globally ac
 * cache vocabulary concept content and relationships
 * store and get statistics of usage for vocabulary concepts available in the time dimension, just like the Internet Archive
 * assign unique DID to other services used in CLARIAH pipelines
+...
+
+# Prerequisites
+
+DID Summarizer use Traefik Cloud Proxy as a backbone to route all services. If you want to install this infrastructure on your own server with dedicated domain name, you should put * in DNS records in order to allow traefik to create subdomains and generate SSL certificates for every service. For example, if your domain name is did.clariah.nl you should add DNS record like \*.did.clariah.nl pointing to your server. 
+
+The list of available services:
+* api.did.${hostname} to access API with DID methods 
+* uri.did.${hostname} for general purpose content DIDs
+* persons.did.${hostname} for persons DIDs identifiers
+* loc.did.${hostname} for locations DIDs
+* org.did.${hostname} for organizations DIDs
+* s3.did.${hostname} to access MinIO storage dashboard
+* s3api.did.${hostname} for MinIO API 
 ...
 
 # Installation
@@ -150,6 +164,62 @@ API endpoint with cache and resolver:
 # Cache and storage
 
 All concepts are being cached in RAM using Redis framework and preserved in MongoDB database. After every restart the key:value pair for URI:DID reindexed and available for lookup in the cache. It should be possible to move all DIDs data from one network to another without too much efforts.  
+
+# Archiving layer
+
+Content archiving functionality is optional and implemented by using S3 protocol compliant with cloud storage services like AWS, Amazon Blob and Google Cloud Platform (GCP). By default the contents of every object or web page with global DID identifier can be stored in MinIO High Performance Object Storage. 
+
+You can also get direct access to storage by using MinIO client. Installation instruction below:
+```
+curl https://dl.min.io/client/mc/release/linux-ppc64le/mc \
+  --create-dirs \
+  -o ~/minio-binaries/mc
+
+chmod +x $HOME/minio-binaries/mc
+export PATH=$PATH:$HOME/minio-binaries/
+```
+MinIO storage layer has web interface and API and can be accessible through your domain name. For example, for storage.clariah.nl it will create s3.storage.clariah.nl and s3api.storage.clariah.nl.
+Login into s3.storage.clariah.nl and create some default user with credentials minio01:somepass123, define new bucket and run this command to create MinIO alias: 
+```
+mc alias set storage https://s3api.storage.clariah.nl minio01 somepass123
+```
+if everything fine, the command below should list all available buckets:
+```
+mc ls 
+```
+Read more information how to setup [MinIO client](https://min.io/docs/minio/linux/reference/minio-mc.html).
+
+Example of POST request to get some document archived with DID:
+```
+curl -X 'POST' \
+  'http://0.0.0.0:8001/archive' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "did": "did:oyd:zQmNPmEsRT6N2a9AyWSCBh56M2jZrDBKdAzdN7Ccie8AK2U",
+  "url": "https://raw.githubusercontent.com/tibonto/educor/main/educor.ttl"
+}'
+```
+
+You can get back the contents of the archived document by using the same DID:
+
+```
+curl -X 'GET' \
+  'http:/0.0.0.0:8001/archive?did=did:oyd:zQmNPmEsRT6N2a9AyWSCBh56M2jZrDBKdAzdN7Ccie8AK2U' \
+  -H 'accept: application/json'
+```
+You can also archive your SPARQL queries and set DIDs for them:
+```
+curl -X 'POST' \
+  'http://0.0.0.0:8001/archive' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "did": "did:oyd:zQmNPmEsRT6N2a9AyWSCBh56M2jZrDBKdAzdN7Ccie8AK2L",
+  "content": "PREFIX foaf:  <http://xmlns.com/foaf/0.1/>\n SELECT ?name WHERE {    ?person foaf:name ?name . }",
+  "author": "Slava"
+}'
+```
 
 # Use cases
 

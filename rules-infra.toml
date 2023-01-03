@@ -48,6 +48,18 @@
         service = "api"
      [http.routers.api.tls]
         certResolver = "myresolver"
+     [http.routers.minio]
+        rule = "Host(`s3.{{ env "hostname" }}`)"
+        entrypoints = ["websecure"]
+        service = "minio"
+     [http.routers.minio.tls]
+        certResolver = "myresolver"
+     [http.routers.minioapi]
+        rule = "Host(`s3api.{{ env "hostname" }}`)"
+        entrypoints = ["websecure"]
+        service = "minioapi"
+     [http.routers.minioapi.tls]
+        certResolver = "myresolver"
 
  [http.services]
         # Define how to reach an existing service on our infrastructure
@@ -63,9 +75,6 @@
         [http.services.perdid.loadBalancer]
            [[http.services.perdid.loadBalancer.servers]]
              url = "http://persons:3000"
-        [http.services.timeline.loadBalancer]
-           [[http.services.timeline.loadBalancer.servers]]
-             url = "{{ env "proxyname" }}:8095"
         [http.services.analytics.loadBalancer]
            [[http.services.analytics.loadBalancer.servers]]
              url = "{{ env "proxyname" }}:8087"
@@ -75,5 +84,13 @@
         [http.services.api.loadBalancer]
            [[http.services.api.loadBalancer.servers]]
              url = "http://didapi"
-
+        [http.services.minio.loadBalancer]
+           [[http.services.minio.loadBalancer.servers]]
+             url = "http://minio:9001"
+        [http.services.minioapi.loadBalancer]
+           [[http.services.minioapi.loadBalancer.servers]]
+             url = "http://minio:9000"
+        [http.services.timeline.loadBalancer]
+           [[http.services.timeline.loadBalancer.servers]]
+             url = "http://timeline"
 

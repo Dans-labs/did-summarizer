@@ -3,7 +3,12 @@ import os
 import redis
 import json
 import requests
-DEBUG = os.environ['DEBUG']
+import boto 
+import boto.s3.connection
+
+DEBUG = False
+if 'DEBUG' in os.environ:
+    DEBUG = os.environ['DEBUG']
 
 def connectmongo():
     client = MongoClient(os.environ['MONGO_HOST'], int(os.environ['MONGO_PORT']))
@@ -86,3 +91,20 @@ def create_did(rcache, uri, collection, metadata=None):
         return did
     return
 
+def S3connect():
+    if 'S3_ACCESS_KEY' in os.environ:
+        conn = boto.connect_s3(
+        aws_access_key_id = os.environ['S3_ACCESS_KEY'],
+        aws_secret_access_key = os.environ['S3_SECRET_KEY'],
+        host = os.environ['S3_API_HOST'],
+        #is_secure=False,               # uncomment if you are not using ssl
+        calling_format = boto.s3.connection.OrdinaryCallingFormat(),
+        )
+        return conn
+    return False
+
+def S3buckets(conn):
+    buckets = []
+    for bucket in conn.get_all_buckets():
+        buckets.append({'name': bucket.name, 'date': bucket.creation_date })
+    return buckets
