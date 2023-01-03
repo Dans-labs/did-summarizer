@@ -28,8 +28,8 @@ import arrow
 
 class Archive(BaseModel):
     did: Optional[str] = None
-    content: str
-    url: str
+    content:  Optional[str] = None
+    url:  Optional[str] = None
     filename: Optional[str] = None
     author: Optional[str] = None
 
