@@ -208,6 +208,18 @@ curl -X 'GET' \
   'http:/0.0.0.0:8001/archive?did=did:oyd:zQmNPmEsRT6N2a9AyWSCBh56M2jZrDBKdAzdN7Ccie8AK2U' \
   -H 'accept: application/json'
 ```
+You can also archive your SPARQL queries and set DIDs for them:
+```
+curl -X 'POST' \
+  'http://0.0.0.0:8001/archive' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "did": "did:oyd:zQmNPmEsRT6N2a9AyWSCBh56M2jZrDBKdAzdN7Ccie8AK2L",
+  "content": "PREFIX foaf:  <http://xmlns.com/foaf/0.1/>\n SELECT ?name WHERE {    ?person foaf:name ?name . }",
+  "author": "Slava"
+}'
+```
 
 # Use cases
 
