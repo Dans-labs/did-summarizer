@@ -21,9 +21,16 @@ from starlette.responses import FileResponse, RedirectResponse
 from starlette.staticfiles import StaticFiles
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
-from utils import connectmongo, storekey, create_did, rebuildcache
+from utils import connectmongo, storekey, create_did, rebuildcache, S3connect, S3buckets
 from Namespaces import NameSpaces
+from pydantic import BaseModel
 import arrow
+
+class Archive(BaseModel):
+    did: str
+    content: str
+    filename: Optional[str] = None
+    author: Optional[str] = None
 
 rcache = redis.Redis(host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], db=os.environ['REDIS_DB'])
 rcacheper = redis.Redis(host=os.environ['REDIS_HOST'], port=os.environ['REDIS_PORT'], db=os.environ['REDIS_PER'])
@@ -190,6 +197,16 @@ async def recommend(searchTerm: str, searchClass: Optional[str] = None, endpoint
         #json.dumps(json.loads(' '.join(data))))
         d = json.dumps(json.loads(' '.join(data)), indent=4, default=str)
         return Response(content=d, media_type="application/json")
+    return False
+
+@app.post("/archive")
+async def storage(archive: Archive):
+    if archive.did:
+        conn = S3connect()
+        bucket = conn.create_bucket('default')
+        key = bucket.new_key(archive.did)
+        key.set_contents_from_string(archive.content)
+        return True
     return False
 
 @app.get('/version')

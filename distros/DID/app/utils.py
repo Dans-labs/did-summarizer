@@ -103,7 +103,7 @@ def S3connect():
         return conn
     return False
 
-def S3buckets():
+def S3buckets(conn):
     buckets = []
     for bucket in conn.get_all_buckets():
         buckets.append({'name': bucket.name, 'date': bucket.creation_date })
