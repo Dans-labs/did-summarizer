@@ -203,7 +203,16 @@ async def recommend(searchTerm: str, searchClass: Optional[str] = None, endpoint
 async def storage(archive: Archive):
     if archive.did:
         conn = S3connect()
-        bucket = conn.create_bucket('default')
+        bucket = False
+        for thisbucket in conn.get_all_buckets():
+            if thisbucket.name == os.environ['S3_DEFAULT_BUCKET']:
+                bucket = thisbucket
+
+        if not bucket:
+            try:
+                bucket = conn.create_bucket(os.environ['S3_DEFAULT_BUCKET'])
+            except:
+                skip = True
         key = bucket.new_key(archive.did)
         key.set_contents_from_string(archive.content)
         return True
