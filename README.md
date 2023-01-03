@@ -189,6 +189,26 @@ mc ls
 ```
 Read more information how to setup [MinIO client](https://min.io/docs/minio/linux/reference/minio-mc.html).
 
+Example of POST request to get some document archived with DID:
+```
+curl -X 'POST' \
+  'http://0.0.0.0:8001/archive' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "did": "did:oyd:zQmNPmEsRT6N2a9AyWSCBh56M2jZrDBKdAzdN7Ccie8AK2U",
+  "url": "https://raw.githubusercontent.com/tibonto/educor/main/educor.ttl"
+}'
+```
+
+You can get back the contents of the archived document by using the same DID:
+
+```
+curl -X 'GET' \
+  'http:/0.0.0.0:8001/archive?did=did:oyd:zQmNPmEsRT6N2a9AyWSCBh56M2jZrDBKdAzdN7Ccie8AK2U' \
+  -H 'accept: application/json'
+```
+
 # Use cases
 
 The idea of DID summarizer is to assign unique globally resolvable decentralized identifier DID to any string, particulary to URLs and URIs. 
