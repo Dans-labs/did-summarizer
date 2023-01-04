@@ -13,7 +13,7 @@ import redis
 import subprocess
 import json
 from fastapi import FastAPI, Request, Response
-from fastapi.responses import HTMLResponse
+from fastapi.responses import PlainTextResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from typing import Optional
@@ -21,10 +21,11 @@ from starlette.responses import FileResponse, RedirectResponse
 from starlette.staticfiles import StaticFiles
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
-from utils import connectmongo, storekey, create_did, rebuildcache, S3connect, S3buckets
+from utils import connectmongo, storekey, create_did, rebuildcache, S3connect, S3buckets, is_s3_ssl_connection
 from Namespaces import NameSpaces
 from pydantic import BaseModel
 import arrow
+import boto3
 
 class Archive(BaseModel):
     did: Optional[str] = None
@@ -172,22 +173,26 @@ async def recommend(searchTerm: str, searchClass: Optional[str] = None, endpoint
         return Response(content=d, media_type="application/json")
     return False
 
-@app.get("/archive")
+@app.get("/archive", response_class=PlainTextResponse)
 async def getfromstorage(did: str):
-    if did:
-        conn = S3connect()
+    conn = S3connect()
+    bucketname = os.environ['S3_DEFAULT_BUCKET']
+    if is_s3_ssl_connection():
         bucket = False
         for thisbucket in conn.get_all_buckets():
             if thisbucket.name == os.environ['S3_DEFAULT_BUCKET']:
                 bucket = thisbucket
         key = bucket.get_key(did)
         return str(key.get_contents_as_string()).split('\n') 
+    else:
+        response = conn.Object(bucketname, did).get()
+        return response['Body'].read()
 
 @app.post("/archive")
 async def storage(archive: Archive):
-    if archive.did:
-        conn = S3connect()
-        bucket = False
+    conn = S3connect()
+    bucket = False
+    if is_s3_ssl_connection():
         for thisbucket in conn.get_all_buckets():
             if thisbucket.name == os.environ['S3_DEFAULT_BUCKET']:
                 bucket = thisbucket
@@ -203,6 +208,26 @@ async def storage(archive: Archive):
         if archive.url:
             key.set_contents_from_string(requests.get(archive.url).text)
         return True
+    else:
+        for thisbucket in conn.buckets.all():
+            if thisbucket.name == os.environ['S3_DEFAULT_BUCKET']:
+                bucket = thisbucket
+        if not bucket:
+            try:
+                bucket = conn.create_bucket(os.environ['S3_DEFAULT_BUCKET'])
+            except:
+                skip = True
+        #conn.Bucket(bucket).upload_file('/home/john/piano.mp3','piano.mp3')
+        body = None
+        if archive.content:
+            body = archive.content
+        if archive.url:
+            body = requests.get(archive.url).text
+        if body:
+            bucketname = os.environ['S3_DEFAULT_BUCKET']
+            conn.Object(bucketname, archive.did).put(Body=body)
+    print(bucket.name)
+
     return False
 
 @app.get('/version')

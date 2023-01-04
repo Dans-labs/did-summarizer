@@ -5,6 +5,7 @@ import json
 import requests
 import boto 
 import boto.s3.connection
+import boto3
 
 DEBUG = False
 if 'DEBUG' in os.environ:
@@ -92,7 +93,7 @@ def create_did(rcache, uri, collection, metadata=None):
     return
 
 def S3connect():
-    if 'S3_ACCESS_KEY' in os.environ:
+    if is_s3_ssl_connection():
         conn = boto.connect_s3(
         aws_access_key_id = os.environ['S3_ACCESS_KEY'],
         aws_secret_access_key = os.environ['S3_SECRET_KEY'],
@@ -101,10 +102,23 @@ def S3connect():
         calling_format = boto.s3.connection.OrdinaryCallingFormat(),
         )
         return conn
+    else:
+        conn = boto3.resource('s3', endpoint_url=os.environ['S3_API_HOST'], aws_access_key_id=os.environ['S3_ACCESS_KEY'], aws_secret_access_key=os.environ['S3_SECRET_KEY'])
+        return conn
     return False
+
+def is_s3_ssl_connection():
+    if 'http://' in os.environ['S3_API_HOST']:
+        return False
+    return True
+
 
 def S3buckets(conn):
     buckets = []
-    for bucket in conn.get_all_buckets():
-        buckets.append({'name': bucket.name, 'date': bucket.creation_date })
+    if is_s3_ssl_connection():
+        for bucket in conn.get_all_buckets():
+            buckets.append({'name': bucket.name, 'date': bucket.creation_date })
+    else:
+        for bucket in conn.buckets.all():
+            buckets.append({'name': bucket.name})
     return buckets
