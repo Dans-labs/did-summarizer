@@ -60,6 +60,12 @@
         service = "minioapi"
      [http.routers.minioapi.tls]
         certResolver = "myresolver"
+     [http.routers.resolver]
+        rule = "Host(`resolver.{{ env "hostname" }}`)"
+        entrypoints = ["websecure"]
+        service = "resolver"
+     [http.routers.resolver.tls]
+        certResolver = "myresolver"
 
  [http.services]
         # Define how to reach an existing service on our infrastructure
@@ -93,4 +99,7 @@
         [http.services.timeline.loadBalancer]
            [[http.services.timeline.loadBalancer.servers]]
              url = "http://timeline"
+        [http.services.resolver.loadBalancer]
+           [[http.services.resolver.loadBalancer.servers]]
+             url = "http://resolver:3000"
 
