@@ -33,8 +33,11 @@ services:
         - "S3_ACCESS_KEY"
         - "S3_SECRET_KEY"
         - "S3_API_HOST"
+        - "S3_DEFAULT_BUCKET"
       ports:
         - "8001:80"
+      extra_hosts:
+        - "s3.covid-19.museum:194.254.93.126"
         #      volumes:
         #       - ./develop-app.py:/app/main.py
         #- ./utils.py:/app/utils.py
@@ -97,7 +100,7 @@ services:
       image: "redis:alpine"
       container_name: redis
       ports:
-        - "6385:6379" 
+        - "6389:6379" 
 
     mongo:
       networks:
@@ -121,7 +124,8 @@ services:
       volumes:
         - ${MINIO_DATA}:/data
       ports:
-        - 9000:9000
+        - 8098:9000
+        - 8099:9001
       command:
         - server
         - /data
@@ -134,6 +138,8 @@ services:
         - "S3_ACCESS_KEY"
         - "S3_SECRET_KEY"
         - "S3_API_HOST"
+      extra_hosts:
+        - "s3.covid-19.museum:194.254.93.126"
 
 networks:
   traefik:
