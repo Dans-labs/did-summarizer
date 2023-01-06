@@ -36,8 +36,6 @@ services:
         - "S3_DEFAULT_BUCKET"
       ports:
         - "8001:80"
-      extra_hosts:
-        - "s3.covid-19.museum:194.254.93.126"
         #      volumes:
         #       - ./develop-app.py:/app/main.py
         #- ./utils.py:/app/utils.py
@@ -138,8 +136,6 @@ services:
         - "S3_ACCESS_KEY"
         - "S3_SECRET_KEY"
         - "S3_API_HOST"
-      extra_hosts:
-        - "s3.covid-19.museum:194.254.93.126"
 
 networks:
   traefik:
