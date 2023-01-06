@@ -50,7 +50,7 @@ Response should provide the list of URIs with corresponding DIDs:
 ```
 Example of request to resolve some DID:
 ```
-curl https://dev.uniresolver.io/1.0/identifiers/did:oyd:zQmXYw1zsGNREhp9aWVdPxqozCYwRaCvoh7nRYwSsWqQGJK
+curl https://0.0.0.0:8124/1.0/identifiers/did:oyd:zQmXYw1zsGNREhp9aWVdPxqozCYwRaCvoh7nRYwSsWqQGJK
 ``` 
 
 # Summarizer example
