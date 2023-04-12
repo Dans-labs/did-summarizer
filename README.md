@@ -228,3 +228,6 @@ Possible usage:
 * Storing all inbound and outbound links for the specific web page defined by URL
 * Assign DIDs for any content and archive it in the decentralized network with access by private key 
 * Build sustainable knowledge graph compliant with FAIR principles: every edge and vertice should have their own unique DID identifier 
+
+# Presentation
+["Decentralisation and knowledge graphs"](https://docs.google.com/presentation/d/1Gz-mL1Lzfb5PDWNv99Wi-lBmAdtl6nFqTLNGIoUPMWM/edit?usp=sharing) for the CLARIAH Tech Day by Slava Tykhonov, February 2023.
