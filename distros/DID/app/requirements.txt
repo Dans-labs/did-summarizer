@@ -1,5 +1,7 @@
 git+https://github.com/AUSSDA/pyDataverse.git@develop
 boto
+boto3
+s3fs
 arrow
 rdflib
 datefinder
