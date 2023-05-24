@@ -35,6 +35,22 @@ class NameSpaces():
                 success = True
         return success
 
+    def getnamespaces(self, s):
+        for ns in self.namespaces:
+            if ns in s:
+                return self.namespaces[ns]
+        return
+
+    def counterstats(self, ns1, istats):
+        if ns1:
+            if ns1 in istats:
+                #print(istats[ns1])
+                istats[ns1] = istats[ns1] + 1
+            else:
+                istats[ns1] = 1
+            return istats
+        return 
+
     def counter(self, concept):
         for namespace in self.namespaces:
             if namespace in concept:
@@ -49,11 +65,15 @@ class NameSpaces():
     def getstats(self):
         return self.stats
     
-    def getnamespaces(self):
+    def getnamespace(self):
         return self.namespaces
     
     def getstatements(self):
         lines = 0
+        globalstats = {}
+        subjects = {}
+        objects = {}
+        predicates = {}
         knowns = {}
         knowno = {}
         knownp = {}
@@ -62,6 +82,60 @@ class NameSpaces():
             s = "%s" % s1
             p = "%s" % p1
             o = "%s" % o1
+            ns1 = self.getnamespaces(s)
+            ns2 = self.getnamespaces(p)
+            ns3 = self.getnamespaces(o)
+            if ns1:
+                if 'subjects' in globalstats:
+                    subjects = globalstats['subjects']
+                    subjects =self.counterstats(ns1, subjects)
+                    globalstats['subjects'] = subjects
+                else:
+                    subjects = {}
+                    subjects =self.counterstats(ns1, subjects)
+                globalstats['subjects'] = subjects
+            else:
+                if not 'subjects' in globalstats:
+                    globalstats['subjects'] = {}
+                if 'literals' in globalstats['subjects']:
+                    globalstats['subjects']['literals'] = globalstats['subjects']['literals'] + 1
+                else:
+                    globalstats['subjects']['literals'] = 1
+                
+            if ns2:
+                if 'predicates' in globalstats:
+                    predicates = globalstats['predicates']
+                    predicates =self.counterstats(ns2, predicates)
+                    #globalstats['p'] = predicates
+                else:
+                    predicates = {}
+                    predicates =self.counterstats(ns2, predicates)
+                globalstats['predicates'] = predicates
+            else:
+                if not 'predicates' in globalstats:
+                    globalstats['predicates'] = {}
+                if 'literals' in globalstats['predicates']:
+                    globalstats['predicates']['literals'] = globalstats['predicates']['literals'] + 1
+                else:
+                    globalstats['predicates']['literals'] = 1
+                    
+            if ns3:
+                if 'objects' in globalstats:
+                    objects = globalstats['objects']
+                    objects =self.counterstats(ns3, objects)
+                    #globalstats['o'] = objects
+                else:
+                    objects = {}
+                    objects =self.counterstats(ns3, objects)
+                globalstats['objects'] = objects
+            else:
+                if not 'objects' in globalstats:
+                    globalstats['objects'] = {}
+                if 'literals' in globalstats['objects']:
+                    globalstats['objects']['literals'] = globalstats['objects']['literals'] + 1
+                else:
+                    globalstats['objects']['literals'] = 1
+
             self.counter(s)
             self.counter(p)
             self.counter(o)
@@ -86,9 +160,10 @@ class NameSpaces():
                     data['objects'] = data['objects'] + 1
 
         self.statements['statements'] = lines
-        self.statements['unique objects'] = data['objects']
-        self.statements['unique predicates'] = data['predicates']
-        self.statements['unique subjects'] = data['subjects']
+        self.statements['objects'] = data['objects']
+        self.statements['predicates'] = data['predicates']
+        self.statements['subjects'] = data['subjects']
+        self.statements['statements'] = globalstats
 #        self.statements['unique literals'] = s['literals']
 
         return self.statements
