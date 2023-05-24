@@ -138,8 +138,8 @@ async def summarizer(url: str, token: Optional[str] = None, persist: Optional[st
     ns = NameSpaces(url)
     data = {}
     data['statements'] = ns.getstatements()
-    data['predicates'] = {}
-    data['objects'] = {}
+    #data['predicates'] = {}
+    #data['objects'] = {}
     data['prefixes'] = ns.getnamespace()
     data['stats'] = ns.getstats()
     if persist:
