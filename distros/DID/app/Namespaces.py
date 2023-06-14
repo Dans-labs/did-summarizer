@@ -14,6 +14,9 @@ class NameSpaces():
         self.processor(self.content)
         self.graph = False
         self.statements = {}
+        self.classes = {}
+        self.stats_classes = {}
+        self.shortclasses = []
              
     def load_graph(self, url):
         self.graph = Graph()
@@ -34,6 +37,13 @@ class NameSpaces():
                 self.get_namespace(line)
                 success = True
         return success
+
+    def checkclasses(self, s, p, o):
+        if '#class' in o.lower():
+            if '#type' in p.lower():
+                if '#' in s:
+                    return s
+        return
 
     def getnamespaces(self, s):
         for ns in self.namespaces:
@@ -82,6 +92,11 @@ class NameSpaces():
             s = "%s" % s1
             p = "%s" % p1
             o = "%s" % o1
+#            print("%s %s %s" % (s, p, o))
+            classcheck = self.checkclasses(s, p, o)
+            if classcheck:
+                self.classes[classcheck] = 1 
+
             ns1 = self.getnamespaces(s)
             ns2 = self.getnamespaces(p)
             ns3 = self.getnamespaces(o)
@@ -160,6 +175,20 @@ class NameSpaces():
                     data['objects'] = data['objects'] + 1
 
         self.statements['statements'] = lines
+        if self.classes:
+            #self.statements['full_list_classes'] = self.classes
+            for classname in self.classes:
+                for prefix in self.namespaces:
+                    if prefix in classname:
+                        shortclass = "%s:%s" % (self.namespaces[prefix], classname.replace(prefix,''))
+                        self.shortclasses.append(shortclass)
+                        if not self.namespaces[prefix] in self.stats_classes:
+                            self.stats_classes[self.namespaces[prefix]] = 1
+                        else:
+                            self.stats_classes[self.namespaces[prefix]] = self.stats_classes[self.namespaces[prefix]] + 1
+            self.statements['list_of_classes'] = self.shortclasses
+            self.statements['classes'] = self.stats_classes
+ 
         self.statements['objects'] = data['objects']
         self.statements['predicates'] = data['predicates']
         self.statements['subjects'] = data['subjects']
