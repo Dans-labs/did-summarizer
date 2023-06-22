@@ -159,7 +159,9 @@ class NameSpaces():
             s = "%s" % s1
             p = "%s" % p1
             o = "%s" % o1
-#            print("%s %s %s" % (s, p, o))
+            if 'DEBUG' in os.environ:
+                print("%s %s %s" % (s, p, o))
+
             try:
                 literal = o1.toPython()
                 literalcheck = vt.analyzer(literal)
@@ -167,9 +169,6 @@ class NameSpaces():
                 if 'type' in literalcheck:
                     litstats = litstats + 1
                     literaltype = literalcheck['type']
-                print("%s %s" % (literal, literaltype))
-                print(literalstypes)
-                #literaltype = type(o1)
                 if literaltype in literalstypes:
                     literalstypes[literaltype] = literalstypes[literaltype]  + 1
                 else:
