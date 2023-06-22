@@ -2,6 +2,45 @@ import re
 import requests
 from rdflib import Graph
 from bs4 import BeautifulSoup
+import datefinder
+
+class ValueTypes():
+    def is_float(self, text):
+        try:
+            return {'type': 'xsd:float', 'value': "\"%s\"^^xsd:float" % float(text) }
+        except:
+            return self.is_boolean(text)
+    
+    def is_int(self, text):
+        try:
+            return {'type': 'xsd:integer', 'value': "\"%s\"^^xsd:integer" % int(text) }
+        except:
+            return self.is_float(text)
+    
+    def is_boolean(self, text):
+        try:
+            if type(eval(text)) == bool:
+                return {'type': 'xsd:boolean', 'value': "\"%s\"^^xsd:boolean" % eval(text) }
+            else:
+                return self.is_date(text)
+        except:
+            return self.is_date(text)
+ 
+    def is_string(self, text):
+        try:
+            return {'type': 'xsd:string', 'value': "\"%s\"^^xsd:string" % str(text) }
+        except:
+            return
+    
+    def is_date(self, text): 
+        normalizedate = list(datefinder.find_dates(text))
+        try:
+            return {'type': 'xsd:string', 'value': "\"%s\"^^xsd:string" % normalizedate[0] }
+        except:
+            return self.is_string(text)
+
+    def analyzer(self, text):
+        return self.is_int(text)
 
 class NameSpaces():
     def __init__(self, url, debug=False):
@@ -18,7 +57,6 @@ class NameSpaces():
         self.classes = {}
         self.stats_classes = {}
         self.shortclasses = []
-        self.DATALEN = 3
              
     def load_graph(self, url):
         self.graph = Graph()
@@ -44,6 +82,7 @@ class NameSpaces():
         return self.namespaces
    
     def processor(self, content):
+        self.DATALEN = 3
         soup = BeautifulSoup(content, 'xml')
         if soup:
             data = soup.prettify().split('\n')
