@@ -18,6 +18,7 @@ class NameSpaces():
         self.classes = {}
         self.stats_classes = {}
         self.shortclasses = []
+        self.DATALEN = 3
              
     def load_graph(self, url):
         self.graph = Graph()
@@ -46,8 +47,8 @@ class NameSpaces():
         soup = BeautifulSoup(content, 'xml')
         if soup:
             data = soup.prettify().split('\n')
-        else:
-            data = content.text.split('\n')
+        if len(data) < self.DATALEN:
+            data = content.split('\n')
 
         success = False
         PREFIXLABELS = ['prefix','ENTITY','xmlns']
