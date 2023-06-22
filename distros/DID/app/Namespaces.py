@@ -145,6 +145,10 @@ class NameSpaces():
         subjects = {}
         objects = {}
         predicates = {}
+        literalsdict = {}
+        literalstypes = {}
+        literals = {}
+        litstats = 0
         knowns = {}
         knowno = {}
         knownp = {}
@@ -154,6 +158,28 @@ class NameSpaces():
             p = "%s" % p1
             o = "%s" % o1
 #            print("%s %s %s" % (s, p, o))
+            try:
+                literal = o1.toPython()
+                literalcheck = vt.analyzer(literal)
+                literaltype = ''
+                if 'type' in literalcheck:
+                    litstats = litstats + 1
+                    literaltype = literalcheck['type']
+                print("%s %s" % (literal, literaltype))
+                print(literalstypes)
+                #literaltype = type(o1)
+                if literaltype in literalstypes:
+                    literalstypes[literaltype] = literalstypes[literaltype]  + 1
+                else:
+                    literalstypes[literaltype] = 1
+
+                if literal in literals:
+                    literalsdict[literal] = literals[literal]  + 1
+                else:
+                    literalsdict[literal] = 1
+            except:
+                skip = True
+
             classcheck = self.checkclasses(s, p, o)
             if classcheck:
                 self.classes[classcheck] = 1 
@@ -250,6 +276,11 @@ class NameSpaces():
             self.statements['list_of_classes'] = self.shortclasses
             self.statements['classes'] = self.stats_classes
  
+        literals['count'] = litstats
+        literals['stats'] = { 'xsd': litstats }
+        literals['list'] = literalstypes
+        literals['lang'] = {"en": 100, "nl":5}
+        self.statements['literals'] = literals
         self.statements['objects'] = data['objects']
         self.statements['predicates'] = data['predicates']
         self.statements['subjects'] = data['subjects']
