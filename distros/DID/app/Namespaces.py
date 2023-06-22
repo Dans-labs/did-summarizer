@@ -20,7 +20,10 @@ class NameSpaces():
              
     def load_graph(self, url):
         self.graph = Graph()
-        self.graph.parse(url, format='ttl')
+        try:
+            self.graph.parse(url, format='ttl')
+        except:
+            self.graph.parse(url, format='xml')
         return self.graph
 
     def get_namespace(self, spacestring):
