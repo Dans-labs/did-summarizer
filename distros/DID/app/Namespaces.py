@@ -12,7 +12,7 @@ class NameSpaces():
         self.DEBUG = debug
         self.content = requests.get(url)
         self.url = url
-        self.processor(self.content)
+        self.processor(self.content.text)
         self.graph = False
         self.statements = {}
         self.classes = {}
@@ -39,7 +39,7 @@ class NameSpaces():
             else:
                 namespacecheck = re.search(r"<\!ENTITY\s+(\S+)\s+\"(\S+)\"", spacestring)
                 if namespacecheck:
-                    self.namespaces[namespacecheck.group(1)] = namespacecheck.group(2)
+                    self.namespaces[namespacecheck.group(2)] = namespacecheck.group(1)
         return self.namespaces
    
     def processor(self, content):
