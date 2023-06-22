@@ -3,6 +3,7 @@ import requests
 from rdflib import Graph
 from bs4 import BeautifulSoup
 import datefinder
+import os
 
 class ValueTypes():
     def is_float(self, text):
