@@ -1,6 +1,7 @@
 import re
 import requests
 from rdflib import Graph
+from bs4 import BeautifulSoup
 
 class NameSpaces():
     def __init__(self, url, debug=False):
@@ -26,24 +27,35 @@ class NameSpaces():
             self.graph.parse(url, format='xml')
         return self.graph
 
-    def get_namespace(self, spacestring):
-        namespacecheck = re.search(r"\@prefix\s+(\S+)\:\s+<(\S+)>", spacestring)
-        if namespacecheck:
-            self.namespaces[namespacecheck.group(2)] = namespacecheck.group(1)
+    def get_namespace(self, spacestring, prefixlabel=None):
+       
+        if prefixlabel == 'xmlns':
+            for namespacecheck in re.finditer('xmlns\:(\S+)\=\"(\S+)\"', spacestring, re.S):
+               self.namespaces[namespacecheck.group(1)] = namespacecheck.group(2)
         else:
-            namespacecheck = re.search(r"<\!ENTITY\s+(\S+)\s+\"(\S+)\"", spacestring)
+            namespacecheck = re.search(r"\@prefix\s+(\S+)\:\s+<(\S+)>", spacestring)
             if namespacecheck:
-                self.namespaces[namespacecheck.group(1)] = namespacecheck.group(2)
+                self.namespaces[namespacecheck.group(2)] = namespacecheck.group(1)
+            else:
+                namespacecheck = re.search(r"<\!ENTITY\s+(\S+)\s+\"(\S+)\"", spacestring)
+                if namespacecheck:
+                    self.namespaces[namespacecheck.group(1)] = namespacecheck.group(2)
         return self.namespaces
    
     def processor(self, content):
-        data = content.text.split('\n')
+        soup = BeautifulSoup(content, 'xml')
+        if soup:
+            data = soup.prettify().split('\n')
+        else:
+            data = content.text.split('\n')
+
         success = False
-        PREFIXLABELS = ['prefix','ENTITY']
+        PREFIXLABELS = ['prefix','ENTITY','xmlns']
         for line in data:
+            print("LINE %s" % line)
             for prefixlabel in PREFIXLABELS:
                 if prefixlabel in line:
-                    self.get_namespace(line)
+                    self.get_namespace(line, prefixlabel)
                     success = True
         return success
 
