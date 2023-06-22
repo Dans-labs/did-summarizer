@@ -30,15 +30,21 @@ class NameSpaces():
         namespacecheck = re.search(r"\@prefix\s+(\S+)\:\s+<(\S+)>", spacestring)
         if namespacecheck:
             self.namespaces[namespacecheck.group(2)] = namespacecheck.group(1)
+        else:
+            namespacecheck = re.search(r"<\!ENTITY\s+(\S+)\s+\"(\S+)\"", spacestring)
+            if namespacecheck:
+                self.namespaces[namespacecheck.group(1)] = namespacecheck.group(2)
         return self.namespaces
-    
+   
     def processor(self, content):
         data = content.text.split('\n')
         success = False
+        PREFIXLABELS = ['prefix','ENTITY']
         for line in data:
-            if '@prefix' in line:
-                self.get_namespace(line)
-                success = True
+            for prefixlabel in PREFIXLABELS:
+                if prefixlabel in line:
+                    self.get_namespace(line)
+                    success = True
         return success
 
     def checkclasses(self, s, p, o):
