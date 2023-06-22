@@ -31,7 +31,7 @@ class NameSpaces():
        
         if prefixlabel == 'xmlns':
             for namespacecheck in re.finditer('xmlns\:(\S+)\=\"(\S+)\"', spacestring, re.S):
-               self.namespaces[namespacecheck.group(1)] = namespacecheck.group(2)
+               self.namespaces[namespacecheck.group(2)] = namespacecheck.group(1)
         else:
             namespacecheck = re.search(r"\@prefix\s+(\S+)\:\s+<(\S+)>", spacestring)
             if namespacecheck:
