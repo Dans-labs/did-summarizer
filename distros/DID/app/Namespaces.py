@@ -153,6 +153,8 @@ class NameSpaces():
         knowno = {}
         knownp = {}
         data = {}
+        vt = ValueTypes()
+
         for s1, p1, o1 in self.load_graph(self.url):
             s = "%s" % s1
             p = "%s" % p1
