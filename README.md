@@ -57,41 +57,131 @@ curl https://0.0.0.0:8124/1.0/identifiers/did:oyd:zQmXYw1zsGNREhp9aWVdPxqozCYwRa
 
 ```
 curl -X 'GET' \
-  'http://0.0.0.0:8001/summarizer?url=https%3A%2F%2Fraw.githubusercontent.com%2FAKSW%2Fdssn.rdf%2Fmaster%2Fnamespace.ttl' \
+  'http://0.0.0.0:8001/summarizer?url=https%3A%2F%2Fwww.w3.org%2Fns%2Factivitystreams-owl' \
   -H 'accept: application/json'
 ```
 
 Response body:
 ```
 {
-  "statements": {
-    "statements": 119,
-    "unique objects": 64,
-    "unique predicates": 25,
-    "unique subjects": 22
-  },
-  "prefixes": {
-    "http://www.w3.org/2000/01/rdf-schema#": "rdfs",
-    "http://www.w3.org/2002/07/owl#": "owl",
-    "http://www.w3.org/2004/02/skos/core#": "skos",
-    "http://xmlns.com/foaf/0.1/": "foaf",
-    "http://rdfs.org/sioc/ns#": "sioc",
-    "http://usefulinc.com/ns/doap#": "doap",
-    "http://www.w3.org/2003/06/sw-vocab-status/ns#": "vs",
-    "http://purl.org/dc/terms/": "dct",
-    "http://purl.org/net/dssn/": "dssn"
-  },
-  "stats": {
-    "dssn": 126,
-    "rdfs": 60,
-    "vs": 13,
-    "doap": 1,
-    "foaf": 20,
-    "owl": 15,
-    "dct": 1,
-    "sioc": 11,
-    "skos": 1
-  }
+    "statements": {
+        "statements": {
+            "subjects": {
+                "as": 585,
+                "literals": 363,
+                "rdf": 2,
+                "xsd": 1
+            },
+            "predicates": {
+                "rdfs": 413,
+                "rdf": 462,
+                "owl": 72,
+                "xsd": 4
+            },
+            "objects": {
+                "xsd": 29,
+                "literals": 408,
+                "as": 217,
+                "owl": 224,
+                "rdf": 66,
+                "rdfs": 7
+            }
+        },
+        "list_of_classes": [
+            "as:TentativeReject",
+            "as:Note",
+            "as:Event",
+            "as:Delete",
+            "as:Ignore",
+            "as:Like",
+            "as:Invite",
+            "as:Reject",
+            "as:Add",
+            "as:Object",
+            "as:Image",
+            "as:Place",
+            "as:Follow",
+            "as:CollectionPage",
+            "as:Listen",
+            "as:Document",
+            "as:Person",
+            "as:View",
+            "as:Read",
+            "as:Service",
+            "as:Undo",
+            "as:Audio",
+            "as:Accept",
+            "as:Link",
+            "as:TentativeAccept",
+            "as:Group",
+            "as:Offer",
+            "as:Question",
+            "as:Application",
+            "as:OrderedCollectionPage",
+            "as:Page",
+            "as:Travel",
+            "as:Remove",
+            "as:Activity",
+            "as:Collection",
+            "as:Flag",
+            "as:Leave",
+            "as:Move",
+            "as:Article",
+            "as:Tombstone",
+            "as:Create",
+            "as:Block",
+            "as:Organization",
+            "as:Profile",
+            "as:Mention",
+            "as:Join",
+            "as:Dislike",
+            "as:Update",
+            "as:IntransitiveActivity",
+            "as:OrderedCollection",
+            "as:Video",
+            "as:Arrive",
+            "as:Announce",
+            "as:Relationship",
+            "as:OrderedItems"
+        ],
+        "classes": {
+            "as": 55
+        },
+        "literals": {
+            "count": 951,
+            "stats": {
+                "xsd": 951
+            },
+            "list": {
+                "xsd:string": 946,
+                "xsd:integer": 5
+            },
+            "lang": {
+                "en": 100,
+                "nl": 5
+            }
+        },
+        "objects": 455,
+        "predicates": 24,
+        "subjects": 308
+    },
+    "predicates": {},
+    "objects": {},
+    "prefixes": {
+        "http://www.w3.org/ns/activitystreams#": "as",
+        "http://www.w3.org/2002/07/owl#": "owl",
+        "http://www.w3.org/1999/02/22-rdf-syntax-ns#": "rdf",
+        "http://www.w3.org/XML/1998/namespace": "xml",
+        "http://www.w3.org/2001/XMLSchema#": "xsd",
+        "http://www.w3.org/2000/01/rdf-schema#": "rdfs"
+    },
+    "stats": {
+        "as": 802,
+        "rdfs": 420,
+        "xsd": 34,
+        "rdf": 530,
+        "owl": 296
+    }
 }
 ```
 
