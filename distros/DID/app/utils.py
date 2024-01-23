@@ -53,11 +53,11 @@ def return_did(uri, metadata=None):
     if uri:
         metadata = { 'uri': uri }
         payload = str(create_payload(metadata, uri))
-        if 'traefikhost' in os.environ:
+        if 'https' in os.environ['traefikhost']:
             DID_url = "%s/%s" % (os.environ['GENERICURI_DID_ALIAS'], "1.0/create?method=oyd")
         else:
             DID_url = "%s/%s" % (os.environ['GENERICURI_DID'], "1.0/create?method=oyd")
-        if DEBUG:
+        if 'DEBUG' in os.environ:
             print(DID_url)
             print(payload)
         r = requests.post(DID_url, data=payload, headers=headers)
@@ -74,7 +74,7 @@ def create_did(rcache, uri, collection, metadata=None):
         if not metadata:
             metadata = { 'uri': uri }
         payload = str(create_payload(metadata, uri))
-        if 'traefikhost' in os.environ:
+        if 'https' in os.environ['traefikhost']:
             DID_url = "%s/%s" % (os.environ['GENERICURI_DID_ALIAS'], "1.0/create?method=oyd")
         else:
             DID_url = "%s/%s" % (os.environ['GENERICURI_DID'], "1.0/create?method=oyd")

@@ -9,6 +9,7 @@ services:
       build: .
       environment:
         - "traefikhost"
+        - "TEST=6"
         - "DID_DB=external"
         - "REDIS_HOST=redis"
         - "REDIS_PORT=6379"
@@ -32,18 +33,18 @@ services:
         - "ORGANIZATIONS_DID_ALIAS"
         - "DID_PWD=${did_pwd}"
         - "DID_SECRET=${did_secret}"
-        - "DEBUG=False"
+        - "DEBUG"
         - "TIMEZONE=Europe/Amsterdam"
-        - "TEST=1"
         - "S3_ACCESS_KEY"
         - "S3_SECRET_KEY"
         - "S3_API_HOST"
         - "S3_DEFAULT_BUCKET"
       ports:
         - "8010:80"
-        #      volumes:
+      volumes:
         #       - ./develop-app.py:/app/main.py
-        #- ./utils.py:/app/utils.py
+        - ./app/app.py:/app/main.py
+        - ./app/utils.py:/app/utils.py
 
     didbox:
       networks:

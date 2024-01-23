@@ -121,13 +121,17 @@ async def cache(uri: str, token: Optional[str] = None):
 @app.post("/cache")
 async def root(info : Request):
     data = await info.json()
+    print(data)
     if 'url' in data:
         urls = {}
-        for url in data['url']:
+        url = data['url']
+        if 'metadata' in data:
+            metadata = data['metadata']
+            print("URL %s" % url)
             if rcache.exists(url):
                 urls[url] = rcache.mget(url)[0]
             else:
-                urls[url] = create_did(rcache, url, collection)
+                urls[url] = create_did(rcache, url, collection, metadata)
         return urls
     return {"message": f"You wrote: %s" % str(data)}
 
