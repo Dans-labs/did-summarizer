@@ -8,6 +8,7 @@ services:
       container_name: didapi
       build: .
       environment:
+        - "traefikhost"
         - "DID_DB=external"
         - "REDIS_HOST=redis"
         - "REDIS_PORT=6379"
@@ -21,10 +22,14 @@ services:
         - "MONGO_DB=did"
         - "MONGO_COLLECTION=privatekeys"
         - "MONGO_URI=reverseuri"
-        - "GENERICURI_DID=https://uri.did.${traefikhost}"
-        - "LOCATIONS_DID=https://loc.did.${traefikhost}"
-        - "PERSONS_DID=https://persons.did.${traefikhost}"
-        - "ORGANIZATIONS_DID=https://org.did.${traefikhost}"
+        - "GENERICURI_DID"
+        - "GENERICURI_DID_ALIAS"
+        - "LOCATIONS_DID"
+        - "LOCATIONS_DID_ALIAS"
+        - "PERSONS_DID"
+        - "PERSONS_DID_ALIAS"
+        - "ORGANIZATIONS_DID"
+        - "ORGANIZATIONS_DID_ALIAS"
         - "DID_PWD=${did_pwd}"
         - "DID_SECRET=${did_secret}"
         - "DEBUG=False"
@@ -35,7 +40,7 @@ services:
         - "S3_API_HOST"
         - "S3_DEFAULT_BUCKET"
       ports:
-        - "8001:80"
+        - "8010:80"
         #      volumes:
         #       - ./develop-app.py:/app/main.py
         #- ./utils.py:/app/utils.py
