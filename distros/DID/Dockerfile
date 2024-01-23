@@ -1,15 +1,14 @@
-#FROM tiangolo/uvicorn-gunicorn-fastapi:python3.7-2019-10-15
 FROM tiangolo/uvicorn-gunicorn-fastapi
 RUN apt update
 #RUN apt-get -y install curl gnupg
 #RUN curl -sL https://deb.nodesource.com/setup_18.x  | bash -
-RUN apt-get -y install poppler-utils nodejs wget bash vim git nodejs jq ca-certificates curl gnupg
+RUN apt-get -y install poppler-utils wget bash vim git jq ca-certificates curl gnupg 
 RUN mkdir -p /etc/apt/keyrings
 RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
 #RUN NODE_MAJOR=18;export NODE_MAJOR
-RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" > /etc/apt/sources.list.d/nodesource.list
+RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_21.x nodistro main" > /etc/apt/sources.list.d/nodesource.list
 RUN apt-get update
-RUN apt-get -y install --no-install-recommends nodejs
+RUN apt-get -y install --no-install-recommends nodejs --fix-missing
 RUN pip install nltk
 RUN pip install textacy
 
