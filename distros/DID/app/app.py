@@ -21,7 +21,7 @@ from starlette.responses import FileResponse, RedirectResponse
 from starlette.staticfiles import StaticFiles
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
-from utils import connectmongo, storekey, create_did, rebuildcache, S3connect, S3buckets, is_s3_ssl_connection
+from utils import connectmongo, storekey, getkey, create_did, rebuildcache, S3connect, S3buckets, is_s3_ssl_connection
 from Namespaces import NameSpaces
 from pydantic import BaseModel
 import arrow
@@ -108,6 +108,11 @@ http = urllib3.PoolManager()
 async def home():
     return "CLARIAH Vocabulary Summarizer v.0.1 https://github.com/Dans-labs/did-summarizer"
 
+@app.get("/resolver")
+async def resolver(md5hash: str, token: Optional[str] = None):
+#     return True
+    return getkey(collection['llm'], md5=md5hash)
+
 @app.get("/cache")
 async def cache(uri: str, token: Optional[str] = None):
     params = []
@@ -117,6 +122,12 @@ async def cache(uri: str, token: Optional[str] = None):
     else:
         return create_did(rcache, uri, collection)
     return did
+
+@app.post("/llmcache")
+async def llmcache(info : Request):
+    data = await info.json()
+    storekey(collection['llm'], data)
+    return True
 
 @app.post("/cache")
 async def root(info : Request):

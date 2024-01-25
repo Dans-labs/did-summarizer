@@ -1,4 +1,5 @@
 from pymongo import MongoClient
+from bson import ObjectId, json_util
 import os
 import redis
 import json
@@ -17,12 +18,35 @@ def connectmongo():
     collections = {}
     collections['keys'] = db[os.environ['MONGO_COLLECTION']]
     collections['uri'] = db[os.environ['MONGO_URI']]
+    collections['llm'] = db[os.environ['MONGO_LLM']]
     return collections
 
 def storekey(coll, thisdoc):
-    #doc1 = {"name": "Ram", "age": "26", "city": "Hyderabad"}
+    print(thisdoc)
     coll.insert_one(thisdoc)
     return
+
+def getkey(coll, md5=None, md5context=None):
+    record = {}
+    if md5:
+        record['md5'] = md5
+    if md5context:
+        record['md5context'] = md5
+    if record:
+        print(record)
+        cursor = coll.find( record )
+        #del cursor['_id']
+        #return cursor
+        localdata = []
+        for document in cursor:
+            del document['_id']
+            #print(document)
+            localdata.append(document)
+        return localdata
+        #return True
+        #return localdata
+    else:
+        return False
 
 def rebuildcache(rcache, coll):
     cursor = coll.find({})
