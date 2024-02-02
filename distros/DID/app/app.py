@@ -109,9 +109,17 @@ async def home():
     return "CLARIAH Vocabulary Summarizer v.0.1 https://github.com/Dans-labs/did-summarizer"
 
 @app.get("/resolver")
-async def resolver(md5hash: str, token: Optional[str] = None):
-#     return True
-    return getkey(collection['llm'], md5=md5hash)
+async def resolver(md5: Optional[str] = None, md5context: Optional[str] = None, url: Optional[str] = None, name: Optional[str] = None, token: Optional[str] = None, type: Optional[str] = None):
+    input = { } 
+    if md5:
+        input['md5'] = md5 
+    if md5context:
+        input['md5context'] = md5context
+    if url:
+        input['url'] = url
+    if type:
+        input['type'] = type
+    return getkey(collection['llm'], input=input)
 
 @app.get("/cache")
 async def cache(uri: str, token: Optional[str] = None):
