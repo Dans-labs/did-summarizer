@@ -26,25 +26,15 @@ def storekey(coll, thisdoc):
     coll.insert_one(thisdoc)
     return
 
-def getkey(coll, md5=None, md5context=None):
-    record = {}
-    if md5:
-        record['md5'] = md5
-    if md5context:
-        record['md5context'] = md5
-    if record:
-        print(record)
-        cursor = coll.find( record )
-        #del cursor['_id']
-        #return cursor
+def getkey(coll, input=None):
+    if input:
+        cursor = coll.find( input )
         localdata = []
         for document in cursor:
             del document['_id']
             #print(document)
             localdata.append(document)
         return localdata
-        #return True
-        #return localdata
     else:
         return False
 
